@@ -34,18 +34,18 @@
 ## Redis key 전략
 ````
  - 쿠폰 ( key : coupon:couponNumber, type : Coupon )
- - 쿠폰발급 ( key 쿠폰 번호 coupon:issue:couponNumber , type : CouponIssue )
+ - 쿠폰발급 ( key coupon:issue:couponNumber , type : CouponIssue )
  
- - 쿠폰 list ( key : coupon:{range}, type : list )
+ - 쿠폰 list ( key : coupon:{range}, type : Sorted sets )
  - 쿠폰 총 갯수 ( key : coupon:total, type : long ) 
  
- - 쿠폰 발급 ( key : coupon:issue:{range}, type : list )
+ - 쿠폰 발급 ( key : coupon:issue:{range}, type : Sorted sets )
  - 쿠폰 발급 총 갯수 ( key : coupon:issue:total, type : long )
  
- - 특정 사용자에게 지급한 쿠폰 ( key : coupon:issue:{user}, type : list ) 
+ - 특정 사용자에게 지급한 쿠폰 ( key : coupon:issue:{user}, type : Sorted sets ) 
  - 특정 사용자에게 지급한 쿠폰 총 갯수 ( key : coupon:issue:{user}:total, type : long )
 
- - 특정일이 만료일인 발급 쿠폰 list ( key : coupon:expiration:{yyyymmdd}:{range}, type : list )
+ - 특정일이 만료일인 발급 쿠폰 list ( key : coupon:expiration:{yyyymmdd}:{range}, type : Sorted sets )
  - 특정일이 만료일인 발급 쿠폰 총 카운트 ( key : coupon:expiration:{yyyymmdd}:total, type : long )
    해당 일자에 만료되는 발급된 쿠폰은 --> total 기준으로 range 키만큼 조회
 ````
