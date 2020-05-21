@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: kakaopay-server-develop
+  profiles:
+    active: local
