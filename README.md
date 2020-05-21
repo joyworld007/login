@@ -3,7 +3,8 @@
 
  Redis 리스트 타입의 경우 약 42억건 정도 데이터 저장이 가능 합니다.
   * ( Maximum length of a list is 232 - 1 elements (4294967295, more than 4 billion of elements per list )
-최적의 조회 성능을 위해 rang base 샤딩 전략으로 10,000건씩 키를 구성하여 나눠서 저장 하였습니다.
+하지만 최적의 성능을 위해 10,000 건 이상 저장하는건 권장하지 않으므로,
+rang base 샤딩 전략으로 10,000건씩 키를 구성하여 나눠서 저장 하였습니다.
 		
 redis key 전략
  - 쿠폰 ( coupon:{range} )
@@ -26,4 +27,9 @@ redis key 전략
    사용자ID
    생성일
 
-발급 받은 쿠폰 만료일 조회용 key( coupon:expiration:yyyymmdd, type : list )
+발급 받은 쿠폰이 해당 만료일인 총 카운트 key( coupon:expiration:yyyymmdd:total, type : long )
+발급 받은 쿠폰이 해당 만료일인 쿠폰 key( coupon:expiration:yyyymmdd:{range}, type : list )
+해당 일자에 만료되는 발급된 쿠폰은 --> total 갯수만큼 range 키로 조회
+
+
+
