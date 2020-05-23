@@ -1,13 +1,10 @@
 package com.kakaopay.server.domain.coupon;
 
 /**
- * 쿠폰 상태
- * CREATE : 쿠폰 생성
- * ISSUE : 사용자 에게 쿠폰 발급 완료
- * USE : 쿠폰 사용 완료
+ * 쿠폰 상태 CREATE : 쿠폰 생성 ISSUE : 사용자 에게 쿠폰 발급 완료 USE : 쿠폰 사용 완료
  */
 public enum CouponStatus {
-    CREATE,
-    ISSUE,
-    USE
+  CREATED,
+  ISSUED,
+  USED
 }

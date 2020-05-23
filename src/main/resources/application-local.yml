@@ -10,7 +10,12 @@ spring:
     username: sa
     password:
 
-    ## Hibernate
+  ##Logging
+  logging:
+    level:
+      root: DEBUG
+
+  ## Hibernate
   jpa:
     show-sql: true
     properties:
