@@ -1,7 +1,9 @@
 package com.kakaopay.server.service.coupon;
 
+import com.kakaopay.server.domain.common.Result;
 import com.kakaopay.server.domain.coupon.CouponStatus;
 import com.kakaopay.server.domain.coupon.ResultCode;
+import com.kakaopay.server.domain.coupon.converter.CouponConverter;
 import com.kakaopay.server.domain.coupon.dao.CouponDao;
 import com.kakaopay.server.domain.coupon.dto.CouponDto;
 import com.kakaopay.server.domain.coupon.entity.Coupon;
@@ -60,16 +62,10 @@ public class CouponServiceImpl implements CouponService {
   public ResultCode issueCoupon(Long id, CouponDto couponDto) {
     Optional<Coupon> coupon = couponJpaRepository.findById(id);
     if (coupon.isPresent()) {
-      log.info("1111");
       if (coupon.get().isExpired()) {
-        log.info("2222");
         return ResultCode.COUPON_EXPIRED;
       }
-
-      System.out.println("coupon: " + coupon);
-
       coupon.get().setCouponIssue(CouponIssue.ofDto(couponDto));
-
       couponJpaRepository.save(coupon.get());
     } else {
       return ResultCode.COUPON_NOT_FOUND;
@@ -78,8 +74,10 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Override
-  public List<Coupon> findCouponIssueByUserId(String UserId) {
-    return null;
+  public Result findCouponByUserId(String UserId) {
+    return Result.builder().entry(
+        new CouponConverter().covertFromEntities(couponJpaRepository.findAllByCouponIssue_UserId(UserId))
+    ).build();
   }
 
   @Override

@@ -6,20 +6,42 @@
  OpenJDK11
  Spring Boot 2.3.0.RELEASE
  Spring Data Jpa
- Spring Data Jdbc
+ Spring Data Jdbc(Batch Update)
  Swagger2
  Domain Driven Design
- CQRS 
+ CQRS Pettern
 ````
 
-## Reading
-* CQRS(Command and Query Responsibility Segregation) Pattern을 적용하여 Write, 
-Update 모듈은 Embed H2 DB로, Read 모듈은 Embed Redis를 통해 엑세스 하도록 구현하였습니다.
-* DDD를 적용하여 DB Entity는 한개지만 쿠폰과, 쿠폰발급 도메인으로 비지니스 로직을 분리 하였습니다.
-* 쿠폰 생성 시 대용량 Insert 를 위해 jpa와 별개로 jdbc batch update를 적용 하였습니다.
-* 특정일에 만료 되는 쿠폰을 빠르게 조회하기 위해 Redis에 만료일을 key로 데이터를 분류하여 저장 하였습니다.
-* RESTFUL한 API를 구현하기 위해 Resource, Method, Status Code를 적절히 활용하였습니다.
-* jwt 토큰을 이용해 회원 가입, 로그인, token을 통한 API 인증을 구현하였습니다. 
+## Reading (strategy)
+````
+BASE 
+* DDD를 적용하기 위해 DB Entity는 한개지만 쿠폰과, 쿠폰발급 도메인으로 비지니스 로직을 분리 [완료]
+* 쿠폰 생성 시 대용량 Insert 를 위해 jpa와 별개로 jdbc batch update를 적용 [완료]
+* RESTFUL 지향 API 구현 [완료]
+
+기본 API 구현하기
+* 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관 [완료]
+* 생성된 쿠폰중 하나를 사용자에게 지급 [완료]
+* 사용자에게 지급된 쿠폰을 조회 [완료]
+* 지급된 쿠폰중 하나를 사용 (쿠폰 재사용은 불가)
+* 지급된 쿠폰중 하나를 사용 취소 (취소된 쿠폰 재사용 가능)
+* 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
+
+TODO : EMBED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현하기
+* EMBED REDIS 연동
+* 당일 만료된 전체 쿠폰 목록을 REDIS에서 조회 
+* 만료 3일전 사용자에게 메시지 전송
+
+TODO : JWT 웹 토큰을 통한 인증하기
+* JWT 웹 토큰을 이용한 회원가입, 로그인, API 인증 구현
+
+TODO : 성능 테스트 결과서 만들기
+* nGrinder 성능 테스트 결과
+
+TODO : 10만개 이상 벌크 Insert 구현하기
+* csv 파일 읽기 구현
+* 10만개 csv 이상 jdbc batch insert 구현
+````
 
 ## Domain 설계
 ```
@@ -62,7 +84,7 @@ Update 모듈은 Embed H2 DB로, Read 모듈은 Embed Redis를 통해 엑세스 
 ````
 - 쿠폰 ( key : coupon:{couponNumber}, type : Coupon )
 - 만료일 기준 쿠폰 발급 list ( key : coupon:expiration:{yyyymmdd}, type : list[Coupon] )
-- json token 저장 ( key : user:{id}, type : User )  
+- API 인증을 위한 user 정보 ( key : user:{id}, type : User )  
 ````
 
 ## Explanation of REST
@@ -84,7 +106,8 @@ Update 모듈은 Embed H2 DB로, Read 모듈은 Embed Redis를 통해 엑세스 
 - 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
 - 생성된 쿠폰중 하나를 사용자에게 지급
 - 사용자에게 지급된 쿠폰을 조회
-- 지급된 쿠폰중 하나를 사용  (쿠폰 재사용은 불가) - 지급된 쿠폰중 하나를 사용 취소 (취소된 쿠폰 재사용 가능)
+- 지급된 쿠폰중 하나를 사용  (쿠폰 재사용은 불가) 
+- 지급된 쿠폰중 하나를 사용 취소 (취소된 쿠폰 재사용 가능)
 - 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
 ``` 
 
@@ -92,7 +115,8 @@ Update 모듈은 Embed H2 DB로, Read 모듈은 Embed Redis를 통해 엑세스 
 ```
 EndPoint : /coupons
 Method : POST 
-Description : 쿠폰을 N개 생성하여 데이터베이스에 보관 ( 쿠폰 코드 1씩 자동증가 : 초기값 1)
+Description : 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관 
+              ( 쿠폰 코드 1씩 자동증가 : 초기값 1)
               만료일을 테스트 하기 위해 10000단위 레코드 별로 만료일 +1 day 증가
 Return value: HTTP status 201 (Created) 
 Payload Example (required parameters)
@@ -100,16 +124,9 @@ Payload Example (required parameters)
     "size": "20000"
 }
 
-|-----------|--------------|---------------------------------------------------|---------------|
-| Parameter |Parameter Type| Description                                       | Default value |
-|-----------|--------------|---------------------------------------------------|---------------|
-| size      | @QueryParam  | Number of coupons to be created                   |               |
-|-----------|--------------|---------------------------------------------------|---------------|
-
-
 EndPoint : /coupons/{id}
 Method : PUT 
-Description : 쿠폰을 사용자에게 지급
+Description : 생성된 쿠폰중 하나를 사용자에게 지급
 Return value: HTTP status 200 (OK) 
 성공시 
 {
@@ -126,4 +143,14 @@ Payload Example (required parameters)
     "status" : "ISSUED",
     "userId" : "joyworld007"
 }
-```
+
+EndPoint : /coupons
+Method : GET
+Description : 사용자에게 지급된 쿠폰을 조회
+Return value: HTTP status 200 (OK) 
+
+|-----------|--------------|---------------------------------------------------|---------------|
+| Parameter |Parameter Type| Description                                       | Default value |
+|-----------|--------------|---------------------------------------------------|---------------|
+| userId    | @QueryParam  | 사용자 아이디 (required = true)                     |               |
+|-----------|--------------|---------------------------------------------------|---------------|

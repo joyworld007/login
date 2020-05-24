@@ -1,5 +1,6 @@
 package com.kakaopay.server.service.coupon;
 
+import com.kakaopay.server.domain.common.Result;
 import com.kakaopay.server.domain.coupon.ResultCode;
 import com.kakaopay.server.domain.coupon.dto.CouponDto;
 import com.kakaopay.server.domain.coupon.entity.Coupon;
@@ -19,7 +20,7 @@ public interface CouponService {
   ResultCode issueCoupon(Long id, CouponDto couponDto);
 
   // 사용자 에게 지급된 쿠폰을 조회
-  List<Coupon> findCouponIssueByUserId(String UserId);
+  Result<List<CouponDto>> findCouponByUserId(String UserId);
 
   // 쿠폰 사용
   @Transactional

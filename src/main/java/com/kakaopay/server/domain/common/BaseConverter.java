@@ -24,11 +24,11 @@ public abstract class BaseConverter<T, C> {
     return fromEntity.apply(entity);
   }
 
-  public final List<C> createFromDtos(final Collection<T> dto) {
+  public final List<C> covertFromDtos(final Collection<T> dto) {
     return dto.stream().map(this::convertFromDto).collect(Collectors.toList());
   }
 
-  public final List<T> createFromEntities(final Collection<C> entity) {
+  public final List<T> covertFromEntities(final Collection<C> entity) {
     return entity.stream().map(this::convertFromEntity).collect(Collectors.toList());
   }
 
