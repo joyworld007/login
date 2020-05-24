@@ -3,7 +3,6 @@ package com.kakaopay.server.domain.coupon.entity;
 import com.kakaopay.server.domain.coupon.CouponStatus;
 import com.kakaopay.server.domain.coupon.dto.CouponDto;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -47,10 +46,18 @@ public class Coupon {
   private CouponIssue couponIssue;
 
   public void setCouponIssue(CouponIssue couponIssue) {
-    if (Optional.ofNullable(couponIssue).isPresent()) {
-      this.couponIssue = couponIssue;
-      this.status = CouponStatus.ISSUED;
-    }
+    this.couponIssue = couponIssue;
+    this.status = CouponStatus.ISSUED;
+  }
+
+  public void setCouponUse(CouponIssue couponIssue) {
+    this.couponIssue = couponIssue;
+    this.status = CouponStatus.USED;
+  }
+
+  public void setCouponCancel(CouponIssue couponIssue) {
+    this.couponIssue = couponIssue;
+    this.status = CouponStatus.ISSUED;
   }
 
   public void Coupon(CouponStatus status, LocalDateTime expireDate, LocalDateTime createDate) {
@@ -63,19 +70,14 @@ public class Coupon {
     return LocalDateTime.now().isAfter(this.expireDate);
   }
 
-  public void couponCancel() {
-    this.status = CouponStatus.ISSUED;
-    this.couponIssue = null;
-  }
-
   protected Coupon(CouponDto dto) {
     this.id = dto.getId();
     this.status = dto.getStatus();
     this.expireDate = dto.getExpireDate();
     this.createDate = dto.getCreateDate();
 
-    CouponIssue couponIssue = new CouponIssue(dto.getId()
-        , dto.getUserId()
+    CouponIssue couponIssue = new CouponIssue(
+        dto.getUserId()
         , dto.getUseDate()
         , dto.getIssueDate()
     );

@@ -35,6 +35,10 @@ public class ServerApplication {
    * TODO 10만개 이상 벌크 Insert
    * - csv 파일 읽기 구현
    * - 10만개 csv 이상 벌크 jdbc insert 구현
+   *
+   * TODO 테스트 코드 작성
+   * - 각 API에 대한 테스트 코드 작성
+   * - 유닛 테스트, 통합 테스트
    */
 
 }

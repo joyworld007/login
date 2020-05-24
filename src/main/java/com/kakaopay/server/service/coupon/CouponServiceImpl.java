@@ -59,13 +59,39 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   @Transactional
-  public ResultCode issueCoupon(Long id, CouponDto couponDto) {
+  public ResultCode updateCoupon(Long id, CouponDto couponDto) {
     Optional<Coupon> coupon = couponJpaRepository.findById(id);
     if (coupon.isPresent()) {
+      //쿠폰 사용기간 만료 체크
       if (coupon.get().isExpired()) {
         return ResultCode.COUPON_EXPIRED;
       }
-      coupon.get().setCouponIssue(CouponIssue.ofDto(couponDto));
+      if (CouponStatus.ISSUED.equals(couponDto.getStatus())
+          && CouponStatus.CREATED.equals(coupon.get().getStatus())
+          && Optional.ofNullable(couponDto.getUserId()).isPresent()) {
+        //사용자 에게 쿠폰 지급
+        //쿠폰 발급일 업데이트
+        couponDto.setIssueDate(LocalDateTime.now());
+        //쿠폰을 발급 처리
+        coupon.get().setCouponIssue(CouponIssue.ofDto(couponDto));
+      } else if (CouponStatus.USED.equals(couponDto.getStatus())
+          && CouponStatus.ISSUED.equals(coupon.get().getStatus())) {
+        //쿠폰 사용 처리
+        couponDto.setIssueDate(coupon.get().getCouponIssue().getIssueDate());
+        couponDto.setUseDate(LocalDateTime.now());
+        couponDto.setUserId(coupon.get().getCouponIssue().getUserId());
+        coupon.get().setCouponUse(CouponIssue.ofDto(couponDto));
+      } else if (CouponStatus.ISSUED.equals(couponDto.getStatus())
+          && CouponStatus.USED.equals(coupon.get().getStatus())) {
+        //쿠폰 사용 취소
+        couponDto.setIssueDate(coupon.get().getCouponIssue().getIssueDate());
+        couponDto.setUserId(coupon.get().getCouponIssue().getUserId());
+        couponDto.setUseDate(null);
+        //쿠폰을 사용 취소 처리
+        coupon.get().setCouponCancel(CouponIssue.ofDto(couponDto));
+      } else {
+        return ResultCode.BAD_REQUEST;
+      }
       couponJpaRepository.save(coupon.get());
     } else {
       return ResultCode.COUPON_NOT_FOUND;
@@ -76,13 +102,9 @@ public class CouponServiceImpl implements CouponService {
   @Override
   public Result findCouponByUserId(String UserId) {
     return Result.builder().entry(
-        new CouponConverter().covertFromEntities(couponJpaRepository.findAllByCouponIssue_UserId(UserId))
+        new CouponConverter()
+            .covertFromEntities(couponJpaRepository.findAllByCouponIssue_UserId(UserId))
     ).build();
-  }
-
-  @Override
-  public ResultCode useCoupon(Long CouponId) {
-    return ResultCode.SUCCESS;
   }
 
   @Override

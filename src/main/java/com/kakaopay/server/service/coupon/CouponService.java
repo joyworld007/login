@@ -15,16 +15,12 @@ public interface CouponService {
   @Transactional
   ResultCode creat(Long size);
 
-  // 쿠폰을 사용자 에게 지급
+  // status ISSUED 일때 쿠폰을 사용자 에게 지급
+  // status USED 일때 쿠폰을 사용
   @Transactional
-  ResultCode issueCoupon(Long id, CouponDto couponDto);
+  ResultCode updateCoupon(Long id, CouponDto couponDto);
 
-  // 사용자 에게 지급된 쿠폰을 조회
   Result<List<CouponDto>> findCouponByUserId(String UserId);
-
-  // 쿠폰 사용
-  @Transactional
-  ResultCode useCoupon(Long CouponId);
 
   // 쿠폰 사용 취소
   @Transactional

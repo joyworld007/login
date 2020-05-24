@@ -43,4 +43,8 @@ public class CommonResponseEntity {
     return new ResponseEntity(commonResponseDto, HttpStatus.BAD_REQUEST);
   }
 
+  public static ResponseEntity notFound() {
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  }
+
 }
