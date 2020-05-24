@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.3.0.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
+    id 'jacoco'
 }
 
 group = 'com.exam'
@@ -10,6 +11,21 @@ sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
+}
+
+jacoco {
+    // JaCoCo 버전
+    toolVersion = '0.8.5'
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+        csv.enabled true
+        xml.enabled false
+    }
+
+    finalizedBy 'jacocoTestCoverageVerification'
 }
 
 dependencies {
@@ -31,6 +47,24 @@ dependencies {
     }
 }
 
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.00
+            }
+
+            excludes = []
+        }
+    }
+}
+
 test {
     useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
 }
