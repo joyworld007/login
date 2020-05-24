@@ -117,8 +117,7 @@ TODO : 테스트 코드 작성
 ```
 EndPoint : /coupons
 Method : POST 
-Description : 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관 
-              ( 쿠폰 코드 1씩 자동증가 : 초기값 1)
+Description : 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관(쿠폰 코드 1씩 자동증가 : 초기값 1) 
               만료일을 테스트 하기 위해 10000단위 레코드 별로 만료일 +1 day 증가
 Return value: HTTP status 201 (Created) 
 Payload Example (required parameters)
@@ -175,6 +174,6 @@ Return value: HTTP status 200 (OK)
 |-----------|--------------|---------------------------------------------------|---------------|
 | Parameter |Parameter Type| Description                                       | Default value |
 |-----------|--------------|---------------------------------------------------|---------------|
-| userId    | @QueryParam  | 사용자 아이디 (required = true)                     |               |
+| userId    | @QueryParam  | UserId (required = true)                          |               |
 |-----------|--------------|---------------------------------------------------|---------------|
 
