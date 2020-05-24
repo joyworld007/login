@@ -112,11 +112,6 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Override
-  public ResultCode cancelCoupon(Long CouponId) {
-    return ResultCode.SUCCESS;
-  }
-
-  @Override
   public Result findTodayExpiredCoupon(Pageable pageable) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     return Result.builder().entry(
