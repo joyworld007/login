@@ -25,22 +25,20 @@ Update 모듈은 Embed H2 DB로, Read 모듈은 Embed Redis를 통해 엑세스 
 ```
 쿠폰(Coupon) 
    쿠폰번호
-   발급여부
+   쿠폰상태
    만료일
    생성일
 
 쿠폰발급(CouponIssue)
-   쿠폰발급
    쿠폰번호
-   사용자ID
-   사용여부
+   유저아이디
    사용일
    발급일
 
-사용자(User)
-   id ( 사용자 아이디 )
-   pass ( 사용자 패스워드 )
-   token ( 발급받은 토큰 )
+유저(User)
+   유저아이디
+   패스워드
+   토큰 
 ```
 
 ## Entity 설계
@@ -48,16 +46,16 @@ Update 모듈은 Embed H2 DB로, Read 모듈은 Embed Redis를 통해 엑세스 
 쿠폰(Coupon) 
    쿠폰번호
    쿠폰상태
-   사용자ID
+   유저아이디
    만료일
    생성일   
    사용일
    발급일
 
-사용자(User)
-   id ( 사용자 아이디 )
-   pass ( 사용자 패스워드 )
-   token ( 발급받은 토큰 )
+유저(User)
+   유저아이디
+   패스워드
+   토큰 
 ```
 
 ## Redis Key
