@@ -44,7 +44,6 @@ TODO : 성능 테스트 결과서 만들기
 TODO : 10만개 이상 벌크 Insert 구현하기
 - csv 파일 읽고 jdbc batch insert 구현 
 
-TODO : 테스트 코드 작성
 ---- 옵션 과제---- 
 ````
 
