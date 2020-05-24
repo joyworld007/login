@@ -11,12 +11,14 @@ import com.kakaopay.server.domain.coupon.entity.CouponIssue;
 import com.kakaopay.server.repository.coupon.CouponJdbcRepository;
 import com.kakaopay.server.repository.coupon.CouponJpaRepository;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -100,10 +102,12 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Override
-  public Result findCouponByUserId(String UserId) {
+  public Result findCouponByUserId(String UserId, Pageable pageable) {
     return Result.builder().entry(
         new CouponConverter()
-            .covertFromEntities(couponJpaRepository.findAllByCouponIssue_UserId(UserId))
+            .covertFromEntities(
+                couponJpaRepository.findAllByCouponIssue_UserId(UserId, pageable).toList()
+            )
     ).build();
   }
 
@@ -113,8 +117,23 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Override
-  public List<Coupon> selectTodayExpiredCoupon() {
-    return null;
+  public Result findTodayExpiredCoupon(Pageable pageable) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    return Result.builder().entry(
+        new CouponConverter()
+            .covertFromEntities(
+                couponJpaRepository.findByExpireDateIsBetween(
+                    LocalDateTime.parse(
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                            + " 00:00:00"
+                        , formatter)
+                    , LocalDateTime.parse(LocalDateTime.now().plusDays(1)
+                            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00"
+                        , formatter)
+
+                    , pageable).toList()
+            )
+    ).build();
   }
 
 }

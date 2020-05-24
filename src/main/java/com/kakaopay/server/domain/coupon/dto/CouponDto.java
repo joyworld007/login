@@ -3,6 +3,7 @@ package com.kakaopay.server.domain.coupon.dto;
 import com.kakaopay.server.domain.coupon.CouponStatus;
 import com.kakaopay.server.domain.coupon.entity.Coupon;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,9 +27,11 @@ public class CouponDto {
     this.status = entity.getStatus();
     this.expireDate = entity.getExpireDate();
     this.createDate = entity.getCreateDate();
-    this.userId = entity.getCouponIssue().getUserId();
-    this.useDate = entity.getCouponIssue().getUseDate();
-    this.issueDate = entity.getCouponIssue().getIssueDate();
+    Optional.ofNullable(entity.getCouponIssue()).ifPresent(t -> {
+      this.userId = entity.getCouponIssue().getUserId();
+      this.useDate = entity.getCouponIssue().getUseDate();
+      this.issueDate = entity.getCouponIssue().getIssueDate();
+    });
   }
 
   public static CouponDto ofEntity(Coupon entity) {

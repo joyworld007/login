@@ -6,6 +6,7 @@ import com.kakaopay.server.domain.coupon.dto.CouponDto;
 import com.kakaopay.server.domain.coupon.entity.Coupon;
 import java.util.List;
 import javax.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,13 +21,14 @@ public interface CouponService {
   @Transactional
   ResultCode updateCoupon(Long id, CouponDto couponDto);
 
-  Result<List<CouponDto>> findCouponByUserId(String UserId);
+  // 사용자의 쿠폰 발급 리스트
+  Result<List<CouponDto>> findCouponByUserId(String UserId, Pageable pageable);
 
   // 쿠폰 사용 취소
   @Transactional
   ResultCode cancelCoupon(Long CouponId);
 
   //오늘 만료된 쿠폰 list 조회
-  List<Coupon> selectTodayExpiredCoupon();
+  Result<List<CouponDto>> findTodayExpiredCoupon(Pageable pageable);
 
 }

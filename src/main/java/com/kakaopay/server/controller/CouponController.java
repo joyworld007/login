@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,9 +46,7 @@ public class CouponController {
       ResultCode resultcode = couponService.updateCoupon(id, couponDto);
       //잘못된 요청
       if ("BAD_REQUEST".equals(resultcode.toString())) {
-        return CommonResponseEntity.fail(
-            ResultCode.BAD_REQUEST.toString(), "Bad Request"
-        );
+        return CommonResponseEntity.badRequest();
       }
       //만료된 쿠폰
       if ("COUPON_EXPIRED".equals(resultcode.toString())) {
@@ -66,11 +65,17 @@ public class CouponController {
 
   @GetMapping
   public ResponseEntity findCouponByUserId(
-      @RequestParam(name = "userId", required = true) String userId) throws Exception {
-    Result<List<CouponDto>> result = couponService.findCouponByUserId(userId);
+      @RequestParam(name = "userId", required = false, defaultValue = "") String userId
+      , Pageable pageable) throws Exception {
+    Result<List<CouponDto>> result = couponService.findCouponByUserId(userId, pageable);
     log.info("couponList : {}", result.getEntry().size());
     return CommonResponseEntity.ok(result);
   }
 
-
+  @GetMapping("/expired-coupons")
+  public ResponseEntity findTodayExpireCoupon(Pageable pageable) throws Exception {
+    Result<List<CouponDto>> result = couponService.findTodayExpiredCoupon(pageable);
+    log.info("couponList : {}", result.getEntry().size());
+    return CommonResponseEntity.ok(result);
+  }
 }
