@@ -14,11 +14,11 @@
 
 ## Reading
 * CQRS(Command and Query Responsibility Segregation) Pattern을 적용하여 Write, 
-Update는 Embed H2 DB로, Read는 Embed Redis를 엑세스 하도록 하였습니다.
+Update 모듈은 Embed H2 DB로, Read 모듈은 Embed Redis를 통해 엑세스 하도록 구현하였습니다.
 * DDD를 적용하여 DB Entity는 한개지만 쿠폰과, 쿠폰발급 도메인으로 비지니스 로직을 분리 하였습니다.
 * 쿠폰 생성 시 대용량 Insert 를 위해 jpa와 별개로 jdbc batch update를 적용 하였습니다.
 * 특정일에 만료 되는 쿠폰을 빠르게 조회하기 위해 Redis에 만료일을 key로 데이터를 분류하여 저장 하였습니다.
-* RestFul한 API를 구현하기 위해 Resource, Method, Status Code를 적절히 활용하였습니다.
+* RESTFUL한 API를 구현하기 위해 Resource, Method, Status Code를 적절히 활용하였습니다.
 * jwt 토큰을 이용해 회원 가입, 로그인, token을 통한 API 인증을 구현하였습니다. 
 
 ## Domain 설계
