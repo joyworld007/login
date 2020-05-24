@@ -13,7 +13,6 @@
 ````
 
 ## Reading (strategy)
-````
 BASE 
 * DDD를 적용하기 위해 DB Entity는 한개지만 쿠폰과, 쿠폰발급 도메인으로 비지니스 로직을 분리 [완료]
 * 쿠폰 생성 시 대용량 Insert 를 위해 jpa와 별개로 jdbc batch update를 적용 [완료]
@@ -41,7 +40,6 @@ TODO : 성능 테스트 결과서 만들기
 TODO : 10만개 이상 벌크 Insert 구현하기
 * csv 파일 읽기 구현
 * 10만개 csv 이상 jdbc batch insert 구현
-````
 
 ## Domain 설계
 ```
