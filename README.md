@@ -94,11 +94,12 @@ Update는 Embed H2 DB로, Read는 Embed Redis를 엑세스 하도록 하였습�
 ```
 EndPoint : /coupons
 Method : POST 
-Description : 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
+Description : 쿠폰을 N개 생성하여 데이터베이스에 보관 ( 쿠폰 코드 1씩 자동증가 : 초기값 1)
+              만료일을 테스트 하기 위해 10000단위 레코드 별로 만료일 +1 day 증가
 Return value: HTTP status 201 (Created) 
 Payload Example (required parameters)
 {
-    "size": "10000"
+    "size": "20000"
 }
 
 |-----------|--------------|---------------------------------------------------|---------------|
@@ -106,7 +107,25 @@ Payload Example (required parameters)
 |-----------|--------------|---------------------------------------------------|---------------|
 | size      | @QueryParam  | Number of coupons to be created                   |               |
 |-----------|--------------|---------------------------------------------------|---------------|
+
+
+EndPoint : /coupons/{id}
+Method : PUT 
+Description : 쿠폰을 사용자에게 지급
+Return value: HTTP status 200 (OK) 
+성공시 
+{
+    "code": "COUPON_EXPIRED",
+    "message": "Coupon is Expired"
+}              
+쿠폰 만료 시  
+{
+    "code": "COUPON_EXPIRED",
+    "message": "Coupon is Expired"
+}
+Payload Example (required parameters)
+{
+    "status" : "ISSUED",
+    "userId" : "joyworld007"
+}
 ```
-
-
-

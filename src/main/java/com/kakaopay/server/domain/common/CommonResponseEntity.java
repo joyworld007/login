@@ -1,6 +1,5 @@
 package com.kakaopay.server.domain.common;
 
-import java.net.URI;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -24,9 +23,8 @@ public class CommonResponseEntity {
     return new ResponseEntity(commonResponseDto, HttpStatus.OK);
   }
 
-  public static ResponseEntity ok(Result result, String code, String message) {
+  public static ResponseEntity fail(String code, String message) {
     CommonResponseDto commonResponseDto = CommonResponseDto.builder()
-        .result(result)
         .code(code)
         .message(message)
         .build();
@@ -44,4 +42,5 @@ public class CommonResponseEntity {
         .build();
     return new ResponseEntity(commonResponseDto, HttpStatus.BAD_REQUEST);
   }
+
 }

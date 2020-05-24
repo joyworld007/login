@@ -1,6 +1,7 @@
 package com.kakaopay.server.domain.coupon.entity;
 
 import com.kakaopay.server.domain.coupon.CouponStatus;
+import com.kakaopay.server.domain.coupon.dto.CouponDto;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import javax.persistence.Column;
@@ -12,9 +13,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table(name = "coupon")
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Coupon {
 
   // 쿠폰 아이디
@@ -25,6 +32,7 @@ public class Coupon {
   // 쿠폰 상태
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
+  @Setter
   private CouponStatus status;
 
   // 쿠폰 만료일
@@ -37,9 +45,6 @@ public class Coupon {
 
   @Embedded
   private CouponIssue couponIssue;
-
-  protected Coupon() {
-  }
 
   public void setCouponIssue(CouponIssue couponIssue) {
     if (Optional.ofNullable(couponIssue).isPresent()) {
@@ -61,6 +66,24 @@ public class Coupon {
   public void couponCancel() {
     this.status = CouponStatus.ISSUED;
     this.couponIssue = null;
+  }
+
+  protected Coupon(CouponDto dto) {
+    this.id = dto.getId();
+    this.status = dto.getStatus();
+    this.expireDate = dto.getExpireDate();
+    this.createDate = dto.getCreateDate();
+
+    CouponIssue couponIssue = new CouponIssue(dto.getId()
+        , dto.getUserId()
+        , dto.getUseDate()
+        , dto.getIssueDate()
+    );
+    this.setCouponIssue(couponIssue);
+  }
+
+  public static Coupon ofDto(CouponDto dto) {
+    return new Coupon(dto);
   }
 
 }

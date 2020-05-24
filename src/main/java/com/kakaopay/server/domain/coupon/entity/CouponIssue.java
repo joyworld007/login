@@ -1,15 +1,21 @@
 package com.kakaopay.server.domain.coupon.entity;
 
+import com.kakaopay.server.domain.coupon.dto.CouponDto;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class CouponIssue {
 
   @Transient
-  private String couponId;
+  private Long couponId;
 
   // 사용자 아이디
   @Column(name = "user_id")
@@ -23,15 +29,29 @@ public class CouponIssue {
   @Column(name = "issue_date")
   private LocalDateTime issueDate;
 
-  protected CouponIssue() {
-  }
-
-  public void CouponIssue(String couponId, String userId, LocalDateTime useDate,
+  public CouponIssue(Long couponId, String userId, LocalDateTime useDate,
       LocalDateTime issueDate) {
     this.couponId = couponId;
     this.userId = userId;
     this.useDate = useDate;
     this.issueDate = issueDate;
+  }
+
+  public CouponIssue(CouponDto couponDto) {
+    this.couponId = couponDto.getId();
+    this.userId = couponDto.getUserId();
+    this.useDate = couponDto.getUseDate();
+    this.issueDate = couponDto.getIssueDate();
+  }
+
+  public static CouponIssue ofDto(CouponDto couponDto) {
+    CouponIssue couponIssue = new CouponIssue(
+        couponDto.getId()
+        , couponDto.getUserId()
+        , couponDto.getUseDate()
+        , couponDto.getIssueDate()
+    );
+    return couponIssue;
   }
 
 }

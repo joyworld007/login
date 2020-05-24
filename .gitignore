@@ -5,6 +5,7 @@ build/
 !**/src/main/**
 !**/src/test/**
 coupon.mv.db
+coupon.trace.db
 
 ### STS ###
 .apt_generated

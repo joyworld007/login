@@ -1,5 +1,6 @@
 package com.kakaopay.server.domain.coupon.dao;
 
+import com.kakaopay.server.domain.coupon.CouponStatus;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +9,11 @@ import lombok.Getter;
 @Getter
 public class CouponDao {
 
-  private String status;
+  private Long id;
+  private CouponStatus status;
   private LocalDateTime expireDate;
-
+  private LocalDateTime createDate;
+  private String userId;
+  private LocalDateTime useDate;
+  private LocalDateTime issueDate;
 }
