@@ -53,7 +53,7 @@ TODO : 만료 3일전 쿠폰을 조회하기 위해 만료 일자를 Key로 분�
 전략 : Spring Batch를 이용해 배치 처리 
 
 TODO : 10만개 이상 벌크 Insert 구현하기
-전략 : csv 파일을 읽고 jdbc batch update 구현
+전략 : csv 파일을 읽고(load file) DB 저장(jdbc batch update) 구현
 
 TODO : 성능 테스트 결과서 만들기
 전략 : nGrinder를 이용해 성능 테스트 
