@@ -40,7 +40,7 @@ public class CouponController {
   }
 
   @PostMapping
-  public ResponseEntity save(@RequestBody CouponDto couponDto, HttpServletRequest request)
+  public ResponseEntity create(@RequestBody CouponDto couponDto, HttpServletRequest request)
       throws Exception {
     couponService.create(couponDto);
     return CommonResponseEntity.created();
@@ -70,7 +70,7 @@ public class CouponController {
   }
 
   @GetMapping
-  public ResponseEntity findCouponByUserId(
+  public ResponseEntity getCouponByUserId(
       @RequestParam(name = "userId", required = false, defaultValue = "") String userId
       , Pageable pageable) throws Exception {
     Result<List<CouponDto>> result = couponService.findCouponByUserId(userId, pageable);
@@ -78,7 +78,7 @@ public class CouponController {
   }
 
   @GetMapping("/today-expired-coupons")
-  public ResponseEntity findTodayExpireCoupon(Pageable pageable) throws Exception {
+  public ResponseEntity getTodayExpireCoupon(Pageable pageable) throws Exception {
     Result<List<CouponDto>> result = couponService.findTodayExpiredCoupon(pageable);
     return CommonResponseEntity.ok(result);
   }
