@@ -27,4 +27,7 @@ public interface CouponService {
   //오늘 만료된 쿠폰 list 조회
   Result<List<CouponDto>> findTodayExpiredCoupon(Pageable pageable);
 
+  //쿠폰 정보를 조회
+  Result<CouponDto> findById(Long id);
+
 }

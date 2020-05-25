@@ -32,7 +32,7 @@ public class CouponServiceImpl implements CouponService {
   CouponJpaRepository couponJpaRepository;
 
   @Autowired
-  CouponRedisRepository redisRepository;
+  CouponRedisRepository couponRedisRepository;
 
   final static int BATCH_SIZE = 10000;
 
@@ -134,6 +134,30 @@ public class CouponServiceImpl implements CouponService {
                     , pageable).toList()
             )
     ).build();
+  }
+
+  @Override
+  public Result findById(Long id) {
+    // Redis에서 먼저 조회
+    Optional<CouponDto> couponDto = couponRedisRepository.findById(id);
+    if (couponDto.isPresent()) {
+      return Result.builder().entry(couponDto.get()).build();
+    } else {
+      // Redis에 결과가 없다면 DB에서 조회 후
+      Optional<Coupon> coupon = couponJpaRepository.findById(id);
+      if (coupon.isPresent()) {
+        CouponDto couponDto1 = new CouponConverter().convertFromEntity(
+            coupon.get()
+        );
+        // Redis에 넣어 준다
+        couponRedisRepository.save(couponDto1);
+        return Result.builder().entry(
+            couponDto1
+        ).build();
+      } else {
+        return Result.builder().entry(null).build();
+      }
+    }
   }
 
 }

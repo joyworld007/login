@@ -53,11 +53,10 @@ public class CouponController {
             ResultCode.COUPON_EXPIRED.toString(), "Coupon is Expired"
         );
       }
-      //쿠폰을 찾을수 없다.
+      //쿠폰을 찾을수 없음
       if ("COUPON_NOT_FOUND".equals(resultcode.toString())) {
         return CommonResponseEntity.notFound();
       }
-
     }
     return CommonResponseEntity.ok();
   }
@@ -67,14 +66,23 @@ public class CouponController {
       @RequestParam(name = "userId", required = false, defaultValue = "") String userId
       , Pageable pageable) throws Exception {
     Result<List<CouponDto>> result = couponService.findCouponByUserId(userId, pageable);
-    log.info("couponList : {}", result.getEntry().size());
     return CommonResponseEntity.ok(result);
   }
 
   @GetMapping("/today-expired-coupons")
   public ResponseEntity findTodayExpireCoupon(Pageable pageable) throws Exception {
     Result<List<CouponDto>> result = couponService.findTodayExpiredCoupon(pageable);
-    log.info("couponList : {}", result.getEntry().size());
     return CommonResponseEntity.ok(result);
   }
+
+  @GetMapping("/{id}")
+  public ResponseEntity getCoupon(@PathVariable(value = "id") Long id) throws Exception {
+    Result<CouponDto> result = couponService.findById(id);
+    if (Optional.ofNullable(result.getEntry()).isPresent()) {
+      return CommonResponseEntity.ok(result);
+    } else {
+      return CommonResponseEntity.notFound();
+    }
+  }
+
 }
