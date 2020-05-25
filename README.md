@@ -166,16 +166,16 @@ Return value: HTTP status 200 (OK), 404 (NOT_FOUND)
 |-----------|--------------|---------------------------------------------------|---------------|
 
 Payload Example (required parameters)
-쿠폰을 사용자 에게 발급
+생성된 쿠폰중 하나를 사용자에게 지급 
 {
     "status" : "ISSUED",
     "userId" : "joyworld007"
 }
-쿠폰을 사용 처리 
+사용자에게 지급한 쿠폰을 사용
 {
     "status" : "USED"
 }
-쿠폰을 사용 취소 
+사용된 쿠폰을 사용 취소
 {
     "status" : "ISSUED"
 }
