@@ -117,21 +117,21 @@ TODO : 성능 테스트 결과서 만들기
 
 ## Api Feature list
 ```
-0. 쿠폰을 하나 생성
-1. 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
-2. 생성된 쿠폰중 하나를 사용자에게 지급
-3. 사용자에게 지급된 쿠폰을 조회
-4. 지급된 쿠폰중 하나를 사용  (쿠폰 재사용은 불가) 
-5. 지급된 쿠폰중 하나를 사용 취소 (취소된 쿠폰 재사용 가능)
-6. 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
-7. 쿠폰 코드를 이용해 쿠폰 정보를 조회  
+- 쿠폰을 하나 생성
+- 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
+- 생성된 쿠폰중 하나를 사용자에게 지급
+- 사용자에게 지급된 쿠폰을 조회
+- 지급된 쿠폰중 하나를 사용  (쿠폰 재사용은 불가) 
+- 지급된 쿠폰중 하나를 사용 취소 (취소된 쿠폰 재사용 가능)
+- 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
+- 쿠폰 코드를 이용해 쿠폰 정보를 조회  
 ``` 
 
 ## Api Endpoint
 ```
 EndPoint : /coupons
 Method : POST 
-Description : 1. 쿠폰을 하나 생성
+Description : 쿠폰을 하나 생성
 Return value: HTTP status 201 (Created) 
 Payload Example (required parameters)
 {
@@ -141,7 +141,7 @@ Payload Example (required parameters)
 
 EndPoint : /coupons/generate
 Method : POST 
-Description : 1. 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
+Description : 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
               (쿠폰 코드 1씩 자동증가 : 초기값 1) 
               만료일을 테스트 하기 위해 10000단위 레코드 별로 만료일 +1 day 증가
 Return value: HTTP status 201 (Created) 
@@ -154,9 +154,9 @@ Payload Example (required parameters)
 
 EndPoint : /coupons/{id}
 Method : PUT 
-Description : 2. 생성된 쿠폰중 하나를 사용자에게 지급 
-              4. 사용자에게 지급한 쿠폰을 사용
-              5. 사용된 쿠폰을 사용 취소
+Description : 생성된 쿠폰중 하나를 사용자에게 지급 
+              사용자에게 지급한 쿠폰을 사용
+              사용된 쿠폰을 사용 취소
 Return value: HTTP status 200 (OK), 404 (NOT_FOUND)
 
 |-----------|--------------|---------------------------------------------------|---------------|
@@ -201,7 +201,7 @@ Response Body example
 
 EndPoint : /coupons
 Method : GET
-Description : 3. 사용자에게 지급된 쿠폰을 조회
+Description : 사용자에게 지급된 쿠폰을 조회
 Return value: HTTP status 200 (OK) 
 
 |-----------|--------------|---------------------------------------------------|---------------|
@@ -216,7 +216,7 @@ Return value: HTTP status 200 (OK)
 
 EndPoint : /coupons/expired-coupons
 Method : GET
-Description : 6. 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
+Description : 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
 Return value: HTTP status 200 (OK) 
 
 |-----------|--------------|---------------------------------------------------|---------------|
@@ -227,7 +227,7 @@ Return value: HTTP status 200 (OK)
 
 EndPoint : /coupons/{id}
 Method : GET
-Description : 7. 쿠폰 정보 조회 ( CQRS 성능 테스트 용 )
+Description : 쿠폰 정보 조회 ( CQRS 성능 테스트 용 )
 Return value: HTTP status 200 (OK) 
 
 ----------------------------------------------------------------------------------------------------
