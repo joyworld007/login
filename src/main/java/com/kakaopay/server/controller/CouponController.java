@@ -8,7 +8,6 @@ import com.kakaopay.server.service.coupon.CouponService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +39,7 @@ public class CouponController {
   }
 
   @PostMapping
-  public ResponseEntity create(@RequestBody CouponDto couponDto, HttpServletRequest request)
+  public ResponseEntity create(@RequestBody CouponDto couponDto)
       throws Exception {
     couponService.create(couponDto);
     return CommonResponseEntity.created();
