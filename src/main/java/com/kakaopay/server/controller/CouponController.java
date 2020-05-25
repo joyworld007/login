@@ -8,10 +8,10 @@ import com.kakaopay.server.service.coupon.CouponService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,24 +19,30 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/v1/coupons")
 public class CouponController {
 
-  @Autowired
-  CouponService couponService;
+  private final CouponService couponService;
 
-  @PostMapping
-  public ResponseEntity createCoupon(@RequestBody final Map<String, String> payload)
+  @PostMapping("generate")
+  public ResponseEntity generate(@RequestBody final Map<String, String> payload)
       throws Exception {
     if (Optional.ofNullable(payload).isPresent()) {
-      couponService.creat(Long.parseLong(payload.get("size")));
+      couponService.generate(Long.parseLong(payload.get("size")));
     }
+    return CommonResponseEntity.created();
+  }
+
+  @PostMapping
+  public ResponseEntity save(@RequestBody CouponDto couponDto, HttpServletRequest request)
+      throws Exception {
+    couponService.create(couponDto);
     return CommonResponseEntity.created();
   }
 

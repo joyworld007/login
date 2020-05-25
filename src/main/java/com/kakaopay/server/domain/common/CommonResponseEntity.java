@@ -1,5 +1,7 @@
 package com.kakaopay.server.domain.common;
 
+import java.net.URI;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -31,8 +33,14 @@ public class CommonResponseEntity {
     return new ResponseEntity(commonResponseDto, HttpStatus.OK);
   }
 
+  public static ResponseEntity created(String location) {
+    HttpHeaders responseHeaders = new HttpHeaders();
+    responseHeaders.setLocation(URI.create(location));
+    return new ResponseEntity(responseHeaders, HttpStatus.CREATED);
+  }
+
   public static ResponseEntity created() {
-    return new ResponseEntity<>(HttpStatus.CREATED);
+    return new ResponseEntity(HttpStatus.CREATED);
   }
 
   public static ResponseEntity badRequest(String code, String message) {

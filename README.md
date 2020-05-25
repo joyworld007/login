@@ -21,6 +21,7 @@
 - RESTFUL API 구현 
 
 기본 API 구현
+- 쿠폰을 하나 생성
 - 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관 [완료]
 - 생성된 쿠폰중 하나를 사용자에게 지급 [완료]
 - 사용자에게 지급된 쿠폰을 조회 [완료]
@@ -113,6 +114,7 @@ TODO : 성능 테스트 결과서 만들기
 
 ## Api Feature list
 ```
+0. 쿠폰을 하나 생성
 1. 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
 2. 생성된 쿠폰중 하나를 사용자에게 지급
 3. 사용자에게 지급된 쿠폰을 조회
@@ -125,6 +127,16 @@ TODO : 성능 테스트 결과서 만들기
 ## Api Endpoint
 ```
 EndPoint : /coupons
+Method : POST 
+Description : 1. 쿠폰을 하나 생성
+Return value: HTTP status 201 (Created) 
+Payload Example (required parameters)
+{
+	"status" : "CREATED",
+	"expireDate" : "2020-05-26T00:00:00"
+}
+
+EndPoint : /coupons/generate
 Method : POST 
 Description : 1. 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
               (쿠폰 코드 1씩 자동증가 : 초기값 1) 

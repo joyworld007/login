@@ -13,12 +13,11 @@ public class ServerApplication {
   }
 
   /**
-   * TODO : API 구현하기
-   * - SWAGGER2 문서 작성하기
+   * TODO 테스트 코드 작성
+   * 각 API에 대한 테스트 코드 작성
    *
-   * TODO : EMBED REDIS를 이용하여 CQRS 패턴 구현하기
-   * - 당일 만료된 전체 쿠폰 목록을 조회
-   * - 만료 3일전 사용자에게 메시지 보내기
+   * TODO : 만료 3일전 사용자에게 메시지 보내기
+   * Spring Batch
    *
    * TODO JWT 웹 토큰을 통한 인증
    * - JWT 웹 토큰을 이용한 회원가입, 로그인, API 인증 구현
@@ -30,8 +29,6 @@ public class ServerApplication {
    * - csv 파일 읽기 구현
    * - 10만개 csv 이상 벌크 jdbc insert 구현
    *
-   * TODO 테스트 코드 작성
-   * - 각 API에 대한 테스트 코드 작성
    */
 
 }

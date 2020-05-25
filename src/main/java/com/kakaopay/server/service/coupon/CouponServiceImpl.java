@@ -16,30 +16,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @SuppressWarnings("unchecked")
 public class CouponServiceImpl implements CouponService {
 
-  @Autowired
-  CouponJdbcRepository couponJdbcRepository;
+  private final CouponJdbcRepository couponJdbcRepository;
 
-  @Autowired
-  CouponJpaRepository couponJpaRepository;
+  private final CouponJpaRepository couponJpaRepository;
 
-  @Autowired
-  CouponRedisRepository couponRedisRepository;
+  private final CouponRedisRepository couponRedisRepository;
 
   final static int BATCH_SIZE = 10000;
 
   @Override
   @Transactional
-  public ResultCode creat(Long size) {
+  public ResultCode generate(Long size) {
 
     LocalDateTime expireDate = LocalDateTime.now();
     List<CouponDto> couponDtoList = new ArrayList<>();
@@ -57,6 +55,20 @@ public class CouponServiceImpl implements CouponService {
         }
       }
       couponJdbcRepository.createCoupon(couponDtoList);
+    } catch (Exception e) {
+      return ResultCode.FAIL;
+    }
+    return ResultCode.SUCCESS;
+  }
+
+  @Override
+  @Transactional
+  public ResultCode create(CouponDto couponDto) {
+    try {
+      Coupon coupon = Coupon.ofDto(couponDto);
+      coupon.setStatus(CouponStatus.CREATED);
+      coupon.setCreateDate(LocalDateTime.now());
+      couponJpaRepository.save(coupon);
     } catch (Exception e) {
       return ResultCode.FAIL;
     }
@@ -94,7 +106,7 @@ public class CouponServiceImpl implements CouponService {
         couponDto.setUserId(coupon.get().getCouponIssue().getUserId());
         couponDto.setUseDate(null);
         //쿠폰을 사용 취소 처리
-        coupon.get().setCouponCancel(CouponIssue.ofDto(couponDto));
+        coupon.get().setCouponUseCancel(CouponIssue.ofDto(couponDto));
       } else {
         return ResultCode.BAD_REQUEST;
       }

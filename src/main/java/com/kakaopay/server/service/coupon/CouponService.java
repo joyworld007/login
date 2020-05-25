@@ -13,7 +13,10 @@ public interface CouponService {
 
   // size 만큼 쿠폰 생성
   @Transactional
-  ResultCode creat(Long size);
+  ResultCode generate(Long size);
+
+  @Transactional
+  ResultCode create(CouponDto coupon);
 
   // status ISSUED 일때 쿠폰을 사용자 에게 지급
   // status USED 일때 쿠폰을 사용

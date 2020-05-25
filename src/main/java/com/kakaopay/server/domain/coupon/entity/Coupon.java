@@ -36,10 +36,12 @@ public class Coupon {
 
   // 쿠폰 만료일
   @Column(name = "expire_date")
+  @Setter
   private LocalDateTime expireDate;
 
   // 쿠폰 생성일
   @Column(name = "create_date")
+  @Setter
   private LocalDateTime createDate;
 
   @Embedded
@@ -55,9 +57,14 @@ public class Coupon {
     this.status = CouponStatus.USED;
   }
 
-  public void setCouponCancel(CouponIssue couponIssue) {
+  public void setCouponUseCancel(CouponIssue couponIssue) {
     this.couponIssue = couponIssue;
     this.status = CouponStatus.ISSUED;
+  }
+
+  public void setCouponIssueCancel() {
+    this.couponIssue = null;
+    this.status = CouponStatus.CREATED;
   }
 
   public void Coupon(CouponStatus status, LocalDateTime expireDate, LocalDateTime createDate) {
