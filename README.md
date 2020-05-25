@@ -29,8 +29,9 @@
 - 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회 [완료]
 
 단위 테스트 코드 작성
-- CouponController 단위 테스트 (service layer mocking)
-- CouponService 단위 테스트 (repository layer mocking) 
+- MockMvc를 이용한 CouponController 테스트
+- MockBean을 이용한 CouponService 비지니스 로직 테스트
+- JacocotestReport
 ---------------------------------------------- 기본 과제 ---------------------------------------------
 
 ---------------------------------------------- 옵션 과제 ---------------------------------------------
@@ -40,7 +41,9 @@ TODO : JWT 웹 토큰을 통한 인증하기
 TODO : 트래픽(성능)을 고려한 설계 (쿠폰 데이터 100억개 이상, API TPS 10K이상 ) 
 전략 : EMBED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현하기
 - Coupon 정보를 id를 키로 redis에 저장 ( 쿠폰 조회시 사용 ) 
-- 만료 3일전 쿠폰을 조회하기 위해 만료 일자를 Key로 분류하여 발급된 쿠폰 리스트 저장 
+
+TODO : 만료 3일전 쿠폰을 조회하기 위해 만료 일자를 Key로 분류하여 발급된 쿠폰 리스트 저장
+전략 : Spring Batch를 이용해 배치 처리 
 
 TODO : 10만개 이상 벌크 Insert 구현하기
 전략 : csv 파일을 읽고 jdbc batch update 구현
@@ -91,7 +94,6 @@ TODO : 성능 테스트 결과서 만들기
 ## Redis Key
 ````
 - 쿠폰 ( key : coupon:{couponNumber}, type : Coupon )
-- 만료일 기준 쿠폰 발급 list ( key : coupon:expiration:{yyyymmdd}, type : list[Coupon] )
 - API 인증을 위한 user 정보 ( key : user:{id}, type : User )  
 ````
 
@@ -148,6 +150,22 @@ Return value: HTTP status 200 (OK), 404 (NOT_FOUND)
 | userId    | @PathParam   | Coupon id                                         |               |
 |-----------|--------------|---------------------------------------------------|---------------|
 
+Payload Example (required parameters)
+쿠폰을 사용자 에게 발급
+{
+    "status" : "ISSUED",
+    "userId" : "joyworld007"
+}
+쿠폰을 사용 처리 
+{
+    "status" : "USED"
+}
+쿠폰을 사용 취소 
+{
+    "status" : "ISSUED"
+}
+
+Response Body example
 성공시 
 {
     "code": "SUCCESS",
@@ -162,25 +180,6 @@ Return value: HTTP status 200 (OK), 404 (NOT_FOUND)
 {
     "code": "BAD_REQUEST",
     "message": "Bad Request"
-}
-
-쿠폰을 사용자 에게 발급 
-Payload Example (required parameters)
-{
-    "status" : "ISSUED",
-    "userId" : "joyworld007"
-}
-
-쿠폰을 사용 처리 
-Payload Example (required parameters)
-{
-    "status" : "USED"
-}
-
-쿠폰을 사용 취소 
-Payload Example (required parameters)
-{
-    "status" : "ISSUED"
 }
 
 ----------------------------------------------------------------------------------------------------
@@ -215,6 +214,8 @@ EndPoint : /coupons/{id}
 Method : GET
 Description : 7. 쿠폰 정보 조회 ( CQRS 성능 테스트 용 )
 Return value: HTTP status 200 (OK) 
+
+----------------------------------------------------------------------------------------------------
 
 |-----------|--------------|---------------------------------------------------|---------------|
 | Parameter |Parameter Type| Description                                       | Default value |

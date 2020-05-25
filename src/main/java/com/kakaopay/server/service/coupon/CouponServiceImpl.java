@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@SuppressWarnings("unchecked")
 public class CouponServiceImpl implements CouponService {
 
   @Autowired
@@ -42,8 +43,6 @@ public class CouponServiceImpl implements CouponService {
 
     LocalDateTime expireDate = LocalDateTime.now();
     List<CouponDto> couponDtoList = new ArrayList<>();
-    List<Coupon> couponList;
-    int batchCount = 0;
     try {
       for (long i = 1; i <= size; i++) {
         couponDtoList.add(
@@ -52,12 +51,12 @@ public class CouponServiceImpl implements CouponService {
                 .status(CouponStatus.CREATED).build()
         );
         if (i % BATCH_SIZE == 0) {
-          batchCount = couponJdbcRepository.createCoupon(couponDtoList);
+          couponJdbcRepository.createCoupon(couponDtoList);
           expireDate = LocalDateTime.now().plusDays(1);
           couponDtoList.clear();
         }
       }
-      batchCount = couponJdbcRepository.createCoupon(couponDtoList);
+      couponJdbcRepository.createCoupon(couponDtoList);
     } catch (Exception e) {
       return ResultCode.FAIL;
     }
@@ -100,6 +99,7 @@ public class CouponServiceImpl implements CouponService {
         return ResultCode.BAD_REQUEST;
       }
       couponJpaRepository.save(coupon.get());
+      couponRedisRepository.save(CouponDto.ofEntity(coupon.get()));
     } else {
       return ResultCode.COUPON_NOT_FOUND;
     }
@@ -138,22 +138,18 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   public Result findById(Long id) {
-    // Redis에서 먼저 조회
+    // Redis에서 쿠폰 조회
     Optional<CouponDto> couponDto = couponRedisRepository.findById(id);
     if (couponDto.isPresent()) {
       return Result.builder().entry(couponDto.get()).build();
     } else {
-      // Redis에 결과가 없다면 DB에서 조회 후
+      // Redis에 결과가 없다면 DB에서 조회
       Optional<Coupon> coupon = couponJpaRepository.findById(id);
       if (coupon.isPresent()) {
-        CouponDto couponDto1 = new CouponConverter().convertFromEntity(
-            coupon.get()
-        );
-        // Redis에 넣어 준다
+        CouponDto couponDto1 = new CouponConverter().convertFromEntity(coupon.get());
+        // Redis에 저장
         couponRedisRepository.save(couponDto1);
-        return Result.builder().entry(
-            couponDto1
-        ).build();
+        return Result.builder().entry(couponDto1).build();
       } else {
         return Result.builder().entry(null).build();
       }
