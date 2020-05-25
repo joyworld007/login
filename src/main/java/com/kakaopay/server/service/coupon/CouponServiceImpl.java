@@ -4,12 +4,12 @@ import com.kakaopay.server.domain.common.Result;
 import com.kakaopay.server.domain.coupon.CouponStatus;
 import com.kakaopay.server.domain.coupon.ResultCode;
 import com.kakaopay.server.domain.coupon.converter.CouponConverter;
-import com.kakaopay.server.domain.coupon.dao.CouponDao;
 import com.kakaopay.server.domain.coupon.dto.CouponDto;
 import com.kakaopay.server.domain.coupon.entity.Coupon;
 import com.kakaopay.server.domain.coupon.entity.CouponIssue;
 import com.kakaopay.server.repository.coupon.CouponJdbcRepository;
 import com.kakaopay.server.repository.coupon.CouponJpaRepository;
+import com.kakaopay.server.repository.coupon.CouponRedisRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -31,6 +31,9 @@ public class CouponServiceImpl implements CouponService {
   @Autowired
   CouponJpaRepository couponJpaRepository;
 
+  @Autowired
+  CouponRedisRepository redisRepository;
+
   final static int BATCH_SIZE = 10000;
 
   @Override
@@ -38,21 +41,23 @@ public class CouponServiceImpl implements CouponService {
   public ResultCode creat(Long size) {
 
     LocalDateTime expireDate = LocalDateTime.now();
-    List<CouponDao> couponDaoList = new ArrayList<>();
+    List<CouponDto> couponDtoList = new ArrayList<>();
+    List<Coupon> couponList;
+    int batchCount = 0;
     try {
       for (long i = 1; i <= size; i++) {
-        couponDaoList.add(
-            CouponDao.builder()
+        couponDtoList.add(
+            CouponDto.builder()
                 .expireDate(expireDate)
                 .status(CouponStatus.CREATED).build()
         );
         if (i % BATCH_SIZE == 0) {
-          couponJdbcRepository.createCoupon(couponDaoList);
+          batchCount = couponJdbcRepository.createCoupon(couponDtoList);
           expireDate = LocalDateTime.now().plusDays(1);
-          couponDaoList.clear();
+          couponDtoList.clear();
         }
       }
-      couponJdbcRepository.createCoupon(couponDaoList);
+      batchCount = couponJdbcRepository.createCoupon(couponDtoList);
     } catch (Exception e) {
       return ResultCode.FAIL;
     }
@@ -117,7 +122,7 @@ public class CouponServiceImpl implements CouponService {
     return Result.builder().entry(
         new CouponConverter()
             .covertFromEntities(
-                couponJpaRepository.findByExpireDateIsBetween(
+                couponJpaRepository.findByExpireDateIsBetweenAndStatus(
                     LocalDateTime.parse(
                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                             + " 00:00:00"
@@ -125,7 +130,7 @@ public class CouponServiceImpl implements CouponService {
                     , LocalDateTime.parse(LocalDateTime.now().plusDays(1)
                             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00"
                         , formatter)
-
+                    , CouponStatus.ISSUED
                     , pageable).toList()
             )
     ).build();

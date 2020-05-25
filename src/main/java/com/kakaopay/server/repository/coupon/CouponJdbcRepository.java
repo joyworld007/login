@@ -1,6 +1,6 @@
 package com.kakaopay.server.repository.coupon;
 
-import com.kakaopay.server.domain.coupon.dao.CouponDao;
+import com.kakaopay.server.domain.coupon.dto.CouponDto;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -17,25 +17,27 @@ import org.springframework.stereotype.Repository;
 public class CouponJdbcRepository {
 
   private final int BATCH_SIZE = 10000;
+
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  public void createCoupon(List<CouponDao> couponDaoList) throws Exception {
+  public int createCoupon(List<CouponDto> couponDtoList) throws Exception {
     int batchCount = 0;
-    List<CouponDao> subItems = new ArrayList<>();
-    for (int i = 0; i < couponDaoList.size(); i++) {
-      subItems.add(couponDaoList.get(i));
+    List<CouponDto> subItems = new ArrayList<>();
+    for (int i = 0; i < couponDtoList.size(); i++) {
+      subItems.add(couponDtoList.get(i));
       if ((i + 1) % BATCH_SIZE == 0) {
-        batchInsert(BATCH_SIZE, batchCount, subItems);
+        batchCount = batchInsert(BATCH_SIZE, batchCount, subItems);
       }
     }
     if (!subItems.isEmpty()) {
-      batchInsert(BATCH_SIZE, batchCount, subItems);
+      batchCount = batchInsert(BATCH_SIZE, batchCount, subItems);
     }
-    log.debug("batchCount : {}", batchCount);
+    return batchCount;
   }
 
-  private void batchInsert(int batchSize, int batchCount, List<CouponDao> subItems) throws Exception {
+  private int batchInsert(int batchSize, int batchCount, List<CouponDto> subItems)
+      throws Exception {
     jdbcTemplate
         .batchUpdate("INSERT INTO COUPON (`STATUS`, `EXPIRE_DATE`, `CREATE_DATE`) VALUES (?, ?, ?)",
             new BatchPreparedStatementSetter() {
@@ -52,6 +54,8 @@ public class CouponJdbcRepository {
               }
             });
     subItems.clear();
+    batchCount++;
+    return batchCount;
   }
 
 }

@@ -33,7 +33,6 @@ public class CouponController {
   public ResponseEntity createCoupon(@RequestBody final Map<String, String> payload)
       throws Exception {
     if (Optional.ofNullable(payload).isPresent()) {
-      log.info("createCoupon - size : {}", payload.get("size"));
       couponService.creat(Long.parseLong(payload.get("size")));
     }
     return CommonResponseEntity.created();

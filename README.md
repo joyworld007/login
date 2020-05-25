@@ -14,13 +14,13 @@
 
 ## Reading (strategy)
 ````
---- 기본 과제 ---
+---------------------------------------------- 기본 과제 ---------------------------------------------
+전략 
+- DDD를 적용하기 위해 DB Entity는 한개지만 쿠폰과, 쿠폰발급 도메인으로 비지니스 로직을 분리 
+- 쿠폰 생성 시 대용량 Insert를 위해 jdbc batch update를 구현 
+- RESTFUL API 구현 
 
-- DDD를 적용하기 위해 DB Entity는 한개지만 쿠폰과, 쿠폰발급 도메인으로 비지니스 로직을 분리 [완료]
-- 쿠폰 생성 시 대용량 Insert 를 위해 jpa와 별개로 jdbc batch update를 적용 [완료]
-- RESTFUL 지향 API 구현 [완료]
-
-기본 API 구현하기
+기본 API 구현
 - 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관 [완료]
 - 생성된 쿠폰중 하나를 사용자에게 지급 [완료]
 - 사용자에게 지급된 쿠폰을 조회 [완료]
@@ -28,26 +28,27 @@
 - 지급된 쿠폰중 하나를 사용 취소 (취소된 쿠폰 재사용 가능) [완료]
 - 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회 [완료]
 
---- 기본 과제 ---
+단위 테스트 코드 작성
+- CouponController 단위 테스트 (service layer mocking)
+- CouponService 단위 테스트 (repository layer mocking) 
+---------------------------------------------- 기본 과제 ---------------------------------------------
 
----- 옵션 과제---- 
-
-TODO : EMBED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현하기
-- EMBED REDIS 연동
-- 만료 일자를 기준으로 분류하여 발급된 쿠폰 저장
-- 당일 만료된 전체 쿠폰 목록을 REDIS에서 조회 
-- 만료 3일전 사용자에게 메시지 전송
-
+---------------------------------------------- 옵션 과제 ---------------------------------------------
 TODO : JWT 웹 토큰을 통한 인증하기
 - JWT 웹 토큰을 이용한 회원가입, 로그인, API 인증 구현
 
-TODO : 성능 테스트 결과서 만들기
-- nGrinder 성능 테스트 결과
+TODO : 트래픽(성능)을 고려한 설계 (쿠폰 데이터 100억개 이상, API TPS 10K이상 ) 
+전략 : EMBED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현하기
+- Coupon 정보를 id를 키로 redis에 저장 ( 쿠폰 조회시 사용 ) 
+- 만료 3일전 쿠폰을 조회하기 위해 만료 일자를 Key로 분류하여 발급된 쿠폰 리스트 저장 
 
 TODO : 10만개 이상 벌크 Insert 구현하기
-- csv 파일 읽고 jdbc batch insert 구현 
+전략 : csv 파일을 읽고 jdbc batch update 구현
 
----- 옵션 과제---- 
+TODO : 성능 테스트 결과서 만들기
+전략 : nGrinder를 이용해 성능 테스트 
+ 
+---------------------------------------------- 옵션 과제 ---------------------------------------------
 ````
 
 ## Domain 설계
@@ -155,20 +156,20 @@ Return value: HTTP status 200 (OK), 404 (NOT_FOUND)
     "message": "Bad Request"
 }
 
-쿠폰을 사용자 에게 지급할 때 
+쿠폰을 사용자 에게 발급 
 Payload Example (required parameters)
 {
     "status" : "ISSUED",
     "userId" : "joyworld007"
 }
 
-쿠폰을 사용으로 처리 할때 
+쿠폰을 사용 처리 
 Payload Example (required parameters)
 {
     "status" : "USED"
 }
 
-쿠폰을 사용 취소 할때 
+쿠폰을 사용 취소 
 Payload Example (required parameters)
 {
     "status" : "ISSUED"
