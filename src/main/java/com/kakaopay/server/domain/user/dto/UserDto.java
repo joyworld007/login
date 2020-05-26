@@ -1,6 +1,7 @@
 package com.kakaopay.server.domain.user.dto;
 
 
+import com.kakaopay.server.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,5 +25,16 @@ public class UserDto {
 
   //발급받은 토큰
   private String token;
+
+  protected UserDto(User entity) {
+    this.userId = entity.getUserId();
+    this.pass = entity.getPass();
+    this.token = entity.getToken();
+  }
+
+  public static UserDto ofEntity(User entity) {
+    return new UserDto(entity);
+  }
+
 
 }

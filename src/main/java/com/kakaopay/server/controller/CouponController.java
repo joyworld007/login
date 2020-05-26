@@ -50,19 +50,17 @@ public class CouponController {
       @PathVariable(value = "id") Long id) throws Exception {
     if (Optional.ofNullable(couponDto).isPresent()) {
       ResultCode resultcode = couponService.updateCoupon(id, couponDto);
-      //잘못된 요청
-      if ("BAD_REQUEST".equals(resultcode.toString())) {
-        return CommonResponseEntity.badRequest();
-      }
-      //만료된 쿠폰
-      if ("COUPON_EXPIRED".equals(resultcode.toString())) {
-        return CommonResponseEntity.fail(
-            ResultCode.COUPON_EXPIRED.toString(), "Coupon is Expired"
-        );
-      }
-      //쿠폰을 찾을수 없음
-      if ("COUPON_NOT_FOUND".equals(resultcode.toString())) {
-        return CommonResponseEntity.notFound();
+      switch(resultcode.toString()) {
+        case "BAD_REQUEST" :
+          return CommonResponseEntity.badRequest();
+        case "COUPON_EXPIRED" :
+          return CommonResponseEntity.fail(
+              ResultCode.COUPON_EXPIRED.toString(), "Coupon is Expired"
+          );
+        case "COUPON_NOT_FOUND" :
+          if ("".equals(resultcode.toString())) {
+            return CommonResponseEntity.notFound();
+          }
       }
     }
     return CommonResponseEntity.ok();

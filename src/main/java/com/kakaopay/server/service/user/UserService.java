@@ -10,5 +10,6 @@ public interface UserService {
 
   public ResultCode create(UserDto userDto);
   public UserDto findByUserId(String userId);
+  public UserDto findByUserIdAndPass(String userId, String pass);
   public String encrypt(String input) throws NoSuchAlgorithmException;
 }

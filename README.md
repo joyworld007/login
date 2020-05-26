@@ -16,19 +16,19 @@
 ````
 ---------------------------------------------- 기본 과제 ---------------------------------------------
 
-전략 
+기본 전략 
 - DDD를 적용하기 위해 DB Entity는 한개지만 쿠폰과, 쿠폰발급 도메인으로 비지니스 로직을 분리 
 - 쿠폰 생성 시 대용량 Insert를 위해 jdbc batch update를 구현 
-- RESTFUL API 구현 
+- RESTFUL API 구현  
 
-기본 API 구현
+TODO : 기본 API 구현 [완료] 
 - 쿠폰을 하나 생성
-- 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관 [완료]
-- 생성된 쿠폰중 하나를 사용자에게 지급 [완료]
-- 사용자에게 지급된 쿠폰을 조회 [완료]
-- 지급된 쿠폰중 하나를 사용 (쿠폰 재사용은 불가) [완료]
-- 지급된 쿠폰중 하나를 사용 취소 (취소된 쿠폰 재사용 가능) [완료]
-- 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회 [완료]
+- 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
+- 생성된 쿠폰중 하나를 사용자에게 지급
+- 사용자에게 지급된 쿠폰을 조회
+- 지급된 쿠폰중 하나를 사용 (쿠폰 재사용은 불가)
+- 지급된 쿠폰중 하나를 사용 취소 (취소된 쿠폰 재사용 가능)
+- 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
 
 단위 테스트 코드 작성
 - MockMvc를 이용한 CouponController 테스트
@@ -41,9 +41,10 @@
 
 TODO : JWT 웹 토큰을 통한 인증하기
 - JWT 웹 토큰을 이용한 회원가입, 로그인, API 인증 구현
-- 회원가입 구현 ( 패스워드 SHA-512 단방향 암호화 진행 ) [완료]
+- 회원가입 구현 ( 패스워드 SHA-512 단방향 암호화 진행 )
 - 로그인 구현 ( 로그인 후 토큰값 리턴 ) 
-- 리턴 받은 토큰값을 이용하여 쿠폰 Api 호출 
+- 리턴 받은 토큰값을 이용하여 쿠폰 API 호출
+- API 호출 시 token 값 유효성 여부 검증 하는 AOP 구현 
 
 TODO : 트래픽(성능)을 고려한 설계 (쿠폰 데이터 100억개 이상, API TPS 10K이상 ) 
 전략 : EMBED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현하기
@@ -138,7 +139,6 @@ Description : 쿠폰을 하나 생성
 Return value: HTTP status 201 (Created) 
 Payload Example (required parameters)
 {
-	"status" : "CREATED",
 	"expireDate" : "2020-05-26T00:00:00"
 }
 
@@ -217,7 +217,7 @@ Return value: HTTP status 200 (OK)
 
 ----------------------------------------------------------------------------------------------------
 
-EndPoint : /coupons/expired-coupons
+EndPoint : /coupons/today-expired-coupons
 Method : GET
 Description : 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
 Return value: HTTP status 200 (OK) 

@@ -6,6 +6,7 @@ import com.kakaopay.server.domain.user.entity.User;
 import com.kakaopay.server.repository.user.UserJpaRepository;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,18 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserDto findByUserId(String userId) {
-    return null;
+    Optional<User> user = userJpaRepository.findById(userId);
+    return user.isPresent() ? UserDto.ofEntity(user.get()) : null;
+  }
+
+  @Override
+  public UserDto findByUserIdAndPass(String userId, String pass) {
+    try {
+      Optional<User> user = userJpaRepository.findByUserIdAndPass(userId, encrypt(pass));
+      return user.isPresent() ? UserDto.ofEntity(user.get()) : null;
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   @Override
