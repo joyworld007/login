@@ -17,7 +17,8 @@ public class WebConfig implements WebMvcConfigurer {
 
   private String[] INTERCEPTOR_WHITE_LIST = {
       "/**/signUp/**",
-      "/**/signIn/**"
+      "/**/signIn/**",
+      "/**/coupons/generate/**"
   };
 
 

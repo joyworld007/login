@@ -154,9 +154,7 @@ public class CouponServiceImpl implements CouponService {
                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                             + " 00:00:00"
                         , formatter)
-                    , LocalDateTime.parse(LocalDateTime.now().plusDays(1)
-                            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00"
-                        , formatter)
+                    , LocalDateTime.now()
                     , CouponStatus.ISSUED
                     , pageable).toList()
             )
