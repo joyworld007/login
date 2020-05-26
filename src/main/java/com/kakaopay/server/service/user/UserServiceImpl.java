@@ -3,6 +3,7 @@ package com.kakaopay.server.service.user;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.kakaopay.server.domain.common.CommonResponseDto;
 import com.kakaopay.server.domain.common.Result;
 import com.kakaopay.server.domain.coupon.ResultCode;
@@ -23,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
   @Value("spring.jwt.secret")
   private String secretKey;
-  private Date EXPIRED_TIME = new Date(System.currentTimeMillis() + 1000 * 10);
+  private Date EXPIRED_TIME = new Date(System.currentTimeMillis() + 100000 * 10);
   final private String ISUSER = "joyworld007";
 
   final UserJpaRepository userJpaRepository;
@@ -50,32 +51,49 @@ public class UserServiceImpl implements UserService {
     try {
       if (user.isPresent()) {
         //비밀번호 체크
-        if (encrypt(password).equals(user.get().getPassword())) {
-          CommonResponseDto.builder().message(ResultCode.LOGIN_FAIL.toString());
+        if (!encrypt(password).equals(user.get().getPassword())) {
+          return CommonResponseDto.builder().result(
+              Result.builder().entry(
+                  ResultCode.LOGIN_FAIL.toString()).build()
+          ).build();
         }
+        //로그인 성공 하였다 토큰을 재 발급 하고 저장
+        user.get().setToken(createToken(userId));
+        userJpaRepository.save(user.get());
+      } else {
+        return CommonResponseDto.builder().result(
+            Result.builder().entry(
+                ResultCode.USER_NOT_FOUND.toString()).build()
+        ).build();
       }
     } catch (Exception e) {
-      CommonResponseDto.builder().message(ResultCode.FAIL.toString());
+      return CommonResponseDto.builder().result(
+          Result.builder().entry(
+              ResultCode.FAIL.toString()).build()
+      ).build();
     }
-
-    return user.isPresent() ? CommonResponseDto.builder().build() : null;
+    return CommonResponseDto.builder().result(Result.builder().entry(user).build()).build();
   }
 
   public String createToken(String userId) {
     return JWT.create()
         .withIssuer(ISUSER)
         .withExpiresAt(EXPIRED_TIME)
-        .withClaim("userId", userId)
+        .withIssuedAt(new Date())
         .sign(Algorithm.HMAC256(secretKey));
   }
 
-  public void verifyToken(String givenToken, String userId) {
+  @Override
+  public boolean verifyToken(String givenToken, String userId) {
     JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secretKey))
         .withIssuer(ISUSER)
-        .withClaim("userId", userId)
         .build();
-
-    verifier.verify(givenToken);
+    try {
+      verifier.verify(givenToken);
+      return true;
+    } catch (JWTVerificationException e) {
+      return false;
+    }
   }
 
   public String encrypt(String input) throws NoSuchAlgorithmException {

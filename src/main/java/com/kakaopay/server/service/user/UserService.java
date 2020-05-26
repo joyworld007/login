@@ -11,4 +11,5 @@ public interface UserService {
 
   public CommonResponseDto signUp(UserDto userDto);
   public CommonResponseDto signIn(String userId, String password);
+  public boolean verifyToken(String givenToken, String userId);
 }

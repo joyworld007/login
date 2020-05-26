@@ -140,7 +140,7 @@ TODO : 성능 테스트 결과서 만들기
 - 쿠폰 코드를 이용해 쿠폰 정보를 조회  
 ``` 
 
-### <a name="chapter-6"></a>Api Endpoint
+### <a name="chapter-7"></a>Api Endpoint
 ```
 EndPoint : /coupons
 Method : POST 
@@ -249,4 +249,7 @@ Return value: HTTP status 200 (OK)
 |-----------|--------------|---------------------------------------------------|---------------|
 | userId    | @PathParam   | Coupon id                                         |               |
 |-----------|--------------|---------------------------------------------------|---------------|
+
 ```
+
+<!--img src="src/docs/files/jenkins_template.png" width="50%" height="50%"/-->

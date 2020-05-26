@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +25,13 @@ public class User {
 
   @Setter
   private String token;
+
+  @Builder
+  public User(String userId, String password, String token) {
+    this.userId = userId;
+    this.password = password;
+    this.token = token;
+  }
 
   protected User(UserDto dto) {
     this.userId = dto.getUserId();
