@@ -50,14 +50,14 @@ public class CouponController {
       @PathVariable(value = "id") Long id) throws Exception {
     if (Optional.ofNullable(couponDto).isPresent()) {
       ResultCode resultcode = couponService.updateCoupon(id, couponDto);
-      switch(resultcode.toString()) {
-        case "BAD_REQUEST" :
+      switch (resultcode.toString()) {
+        case "BAD_REQUEST":
           return CommonResponseEntity.badRequest();
-        case "COUPON_EXPIRED" :
+        case "COUPON_EXPIRED":
           return CommonResponseEntity.fail(
               ResultCode.COUPON_EXPIRED.toString(), "Coupon is Expired"
           );
-        case "COUPON_NOT_FOUND" :
+        case "COUPON_NOT_FOUND":
           if ("".equals(resultcode.toString())) {
             return CommonResponseEntity.notFound();
           }
