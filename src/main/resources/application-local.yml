@@ -21,6 +21,9 @@ spring:
       hibernate:
         format_sql: true
 
+  jwt:
+    secret: kakaopay!@#
+
 logging:
   level:
     root: info

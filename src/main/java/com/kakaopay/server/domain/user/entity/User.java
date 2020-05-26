@@ -7,6 +7,7 @@ import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table(name = "user")
 @Entity
@@ -19,14 +20,14 @@ public class User {
   private String userId;
 
   //패스워드
-  private String pass;
+  private String password;
 
-  //발급받은 토큰
+  @Setter
   private String token;
 
   protected User(UserDto dto) {
     this.userId = dto.getUserId();
-    this.pass = dto.getPass();
+    this.password = dto.getPassword();
     this.token = dto.getToken();
   }
 

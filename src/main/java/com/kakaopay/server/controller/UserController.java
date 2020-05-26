@@ -1,10 +1,12 @@
 package com.kakaopay.server.controller;
 
+import com.kakaopay.server.domain.common.CommonResponseDto;
 import com.kakaopay.server.domain.common.CommonResponseEntity;
 import com.kakaopay.server.domain.user.dto.UserDto;
 import com.kakaopay.server.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,21 +23,24 @@ public class UserController {
 
   final UserService userService;
 
-  @PostMapping
-  public ResponseEntity create(@RequestBody UserDto userDto)
+  @Value("spring.jwt.secret")
+  private String secretKey;
+
+  @PostMapping("/signUp")
+  public ResponseEntity signup(@RequestBody UserDto userDto)
       throws Exception {
-    userService.create(userDto);
-    return CommonResponseEntity.created();
+    CommonResponseDto<UserDto> commonResponseDto = userService.signUp(userDto);
+    return CommonResponseEntity.ok(commonResponseDto.getResult());
   }
 
-  @GetMapping("/login")
-  public ResponseEntity login(
-      @RequestParam(name = "userId", required = true) String userId,
-      @RequestParam(name = "pass", required = true) String pass
-  )
-      throws Exception {
-    UserDto userDto = userService.findByUserIdAndPass(userId, pass);
-    return CommonResponseEntity.ok();
+  @GetMapping("/signIn")
+  public ResponseEntity<?> signin(
+      @RequestParam(name = "userId", required = true) String userId
+      , @RequestParam(name = "password", required = true) String password
+  ) {
+    CommonResponseDto commonResponseDto = userService.signIn(userId, password);
+    return CommonResponseEntity.ok(commonResponseDto.getResult());
   }
 
 }
+

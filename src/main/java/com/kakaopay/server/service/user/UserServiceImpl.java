@@ -1,49 +1,83 @@
 package com.kakaopay.server.service.user;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.kakaopay.server.domain.common.CommonResponseDto;
+import com.kakaopay.server.domain.common.Result;
 import com.kakaopay.server.domain.coupon.ResultCode;
 import com.kakaopay.server.domain.user.dto.UserDto;
 import com.kakaopay.server.domain.user.entity.User;
 import com.kakaopay.server.repository.user.UserJpaRepository;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+  @Value("spring.jwt.secret")
+  private String secretKey;
+  private Date EXPIRED_TIME = new Date(System.currentTimeMillis() + 1000 * 10);
+  final private String ISUSER = "joyworld007";
+
   final UserJpaRepository userJpaRepository;
 
   @Override
-  public ResultCode create(UserDto userDto) {
+  public CommonResponseDto signUp(UserDto userDto) {
     try {
-      userDto.setPass(encrypt(userDto.getPass()));
+      //중복 체크
+      if (verifyDuplicatedUser(userDto.getUserId())) {
+        CommonResponseDto.builder().message(ResultCode.DUPLICATED_USER.toString());
+      }
+      userDto.setToken(createToken(userDto.getUserId()));
+      userDto.setPassword(encrypt(userDto.getPassword()));
       userJpaRepository.save(User.ofDto(userDto));
     } catch (Exception e) {
-      return ResultCode.FAIL;
+      CommonResponseDto.builder().message(ResultCode.FAIL.toString());
     }
-    return ResultCode.SUCCESS;
+    return CommonResponseDto.builder().result(Result.builder().entry(userDto).build()).build();
   }
 
   @Override
-  public UserDto findByUserId(String userId) {
+  public CommonResponseDto signIn(String userId, String password) {
     Optional<User> user = userJpaRepository.findById(userId);
-    return user.isPresent() ? UserDto.ofEntity(user.get()) : null;
-  }
-
-  @Override
-  public UserDto findByUserIdAndPass(String userId, String pass) {
     try {
-      Optional<User> user = userJpaRepository.findByUserIdAndPass(userId, encrypt(pass));
-      return user.isPresent() ? UserDto.ofEntity(user.get()) : null;
+      if (user.isPresent()) {
+        //비밀번호 체크
+        if (encrypt(password).equals(user.get().getPassword())) {
+          CommonResponseDto.builder().message(ResultCode.LOGIN_FAIL.toString());
+        }
+      }
     } catch (Exception e) {
-      return null;
+      CommonResponseDto.builder().message(ResultCode.FAIL.toString());
     }
+
+    return user.isPresent() ? CommonResponseDto.builder().build() : null;
   }
 
-  @Override
+  public String createToken(String userId) {
+    return JWT.create()
+        .withIssuer(ISUSER)
+        .withExpiresAt(EXPIRED_TIME)
+        .withClaim("userId", userId)
+        .sign(Algorithm.HMAC256(secretKey));
+  }
+
+  public void verifyToken(String givenToken, String userId) {
+    JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secretKey))
+        .withIssuer(ISUSER)
+        .withClaim("userId", userId)
+        .build();
+
+    verifier.verify(givenToken);
+  }
+
   public String encrypt(String input) throws NoSuchAlgorithmException {
     String output = "";
     StringBuffer sb = new StringBuffer();
@@ -62,5 +96,10 @@ public class UserServiceImpl implements UserService {
     output = sb.toString();
     return output;
   }
+
+  private boolean verifyDuplicatedUser(String userId) {
+    return Optional.ofNullable(userJpaRepository.findById(userId)).isPresent();
+  }
+
 
 }

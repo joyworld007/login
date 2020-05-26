@@ -1,7 +1,13 @@
 # 카카오 페이 서버 개발 과제
 ## Rest API 기반 쿠폰시스템
 
-## Specifications
+## 목차
+* [Specifications](#chapter-1)
+* [Strategy](#chapter-2)
+* [deploypack - deploy Template](#chapter-3)
+* [Jenkins 연동](#chapter-4)
+
+### <a name="chapter-1"></a>Specifications 
 ````
  OpenJDK11
  Spring Boot 2.3.0.RELEASE
@@ -12,7 +18,7 @@
  CQRS Pettern
 ````
 
-## Reading (strategy)
+### <a name="chapter-1"></a>Strategy 
 ````
 ---------------------------------------------- 기본 과제 ---------------------------------------------
 

@@ -21,14 +21,14 @@ public class UserDto {
   private String userId;
 
   //패스워드
-  private String pass;
+  private String password;
 
-  //발급받은 토큰
+  //토큰
   private String token;
 
   protected UserDto(User entity) {
     this.userId = entity.getUserId();
-    this.pass = entity.getPass();
+    this.password = entity.getPassword();
     this.token = entity.getToken();
   }
 
