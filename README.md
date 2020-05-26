@@ -40,7 +40,7 @@ TODO : 기본 API 구현 [완료]
 - 지급된 쿠폰중 하나를 사용 취소 (취소된 쿠폰 재사용 가능)
 - 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
 
-단위 테스트 코드 작성
+단위 테스트 코드 작성 
 - MockMvc를 이용한 CouponController 테스트
 - MockBean을 이용한 CouponService 비지니스 로직 테스트
 - JacocotestReport
@@ -49,19 +49,19 @@ TODO : 기본 API 구현 [완료]
 
 ---------------------------------------------- 옵션 과제 ---------------------------------------------
 
-TODO : JWT 웹 토큰을 통한 인증하기
+TODO : JWT 웹 토큰을 통한 인증하기 [완료]
 - JWT 웹 토큰을 이용한 회원가입, 로그인, API 인증 구현
 - 회원가입 구현 ( 패스워드 SHA-512 단방향 암호화 진행 )
 - 로그인 구현 ( 로그인 후 토큰값 리턴 ) 
 - 리턴 받은 토큰값을 이용하여 쿠폰 API 호출
 - API 호출 시 token 값 유효성 여부 검증 하는 AOP 구현 
 
-TODO : 트래픽(성능)을 고려한 설계 (쿠폰 데이터 100억개 이상, API TPS 10K이상 ) 
+TODO : 트래픽(성능)을 고려한 설계 (쿠폰 데이터 100억개 이상, API TPS 10K이상 ) [완료] 
 전략 : EMBED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현하기
 - Coupon 정보를 id를 키로 redis에 저장 ( 쿠폰 조회시 사용 ) 
 
 TODO : 만료 3일전 쿠폰을 조회하기 위해 만료 일자를 Key로 분류하여 발급된 쿠폰 리스트 저장
-전략 : Spring Batch를 이용해 배치 처리 
+전략 : 만료일을 키로 Redis에 저장 조회된 쿠폰 정보를 기준 System.out
 
 TODO : 10만개 이상 벌크 Insert 구현하기
 전략 : csv 파일을 읽고(load file) DB 저장(jdbc batch update) 구현
@@ -251,5 +251,3 @@ Return value: HTTP status 200 (OK)
 |-----------|--------------|---------------------------------------------------|---------------|
 
 ```
-
-<!--img src="src/docs/files/jenkins_template.png" width="50%" height="50%"/-->
