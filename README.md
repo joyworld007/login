@@ -17,6 +17,7 @@
  Spring Boot 2.3.0.RELEASE
  Spring Data Jpa
  Spring Data Jdbc(Batch Update)
+ Spring Data Redis
  Swagger2
  Domain Driven Design
  CQRS Pettern
@@ -111,7 +112,8 @@ TODO : 성능 테스트 결과서 만들기 [미완료]
 
 ### <a name="chapter-4"></a>Redis Key 
 ````
-- 쿠폰 ( key : coupon:{couponNumber}, type : Coupon )  
+- 쿠폰( key : 쿠폰 ID, type : 쿠폰 Object)  
+- 해당 일자에 만료되는 쿠폰(key : 만료일자, type : 쿠폰 ID 리스트)
 ````
 
 ### <a name="chapter-5"></a>Explanation of REST 
