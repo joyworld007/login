@@ -60,7 +60,7 @@ TODO : 트래픽(성능)을 고려한 설계 (쿠폰 데이터 100억개 이상,
 전략 : EMBED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현하기
 - Coupon 정보를 id를 키로 redis에 저장 ( 쿠폰 조회시 사용 ) 
 
-TODO : 만료 3일전 쿠폰을 조회하기 위해 만료 일자를 Key로 분류하여 발급된 쿠폰 리스트 저장
+TODO : 만료 3일전 쿠폰을 조회하여 알림
 전략 : 만료일을 키로 Redis에 저장 조회된 쿠폰 정보를 기준 System.out
 
 TODO : 10만개 이상 벌크 Insert 구현하기
@@ -271,6 +271,17 @@ Return value: HTTP status 200 (OK)
 | Parameter |Parameter Type| Description                                       | Default value |
 |-----------|--------------|---------------------------------------------------|---------------|
 | pageable  | @Pageable    | Pageable Object(size, page)                       |               |
+|-----------|--------------|---------------------------------------------------|---------------|
+
+EndPoint : /v1/coupons/notify-expire-coupons
+Method : GET
+Description : 만료 day일전 쿠폰을 조회하여 logger info 알림
+Return value: HTTP status 200 (OK) 
+
+|-----------|--------------|---------------------------------------------------|---------------|
+| Parameter |Parameter Type| Description                                       | Default value |
+|-----------|--------------|---------------------------------------------------|---------------|
+| day       | @QueryParam  | search expired plus day                           |               |
 |-----------|--------------|---------------------------------------------------|---------------|
 
 EndPoint : /v1/coupons/{id}
