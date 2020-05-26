@@ -4,8 +4,12 @@
 ## 목차
 * [Specifications](#chapter-1)
 * [Strategy](#chapter-2)
-* [deploypack - deploy Template](#chapter-3)
-* [Jenkins 연동](#chapter-4)
+* [Domain 설계](#chapter-3)
+* [Redis Key](#chapter-4)
+* [Explanation of REST](#chapter-5)
+* [Api Feature list](#chapter-6)
+* [Api Endpoint](#chapter-7)
+
 
 ### <a name="chapter-1"></a>Specifications 
 ````
@@ -18,7 +22,7 @@
  CQRS Pettern
 ````
 
-### <a name="chapter-1"></a>Strategy 
+### <a name="chapter-2"></a>Strategy 
 ````
 ---------------------------------------------- 기본 과제 ---------------------------------------------
 
@@ -68,7 +72,7 @@ TODO : 성능 테스트 결과서 만들기
 ---------------------------------------------- 옵션 과제 ---------------------------------------------
 ````
 
-## Domain 설계
+### <a name="chapter-3"></a>Domain 설계 
 ```
 쿠폰(Coupon) 
    쿠폰번호
@@ -105,13 +109,12 @@ TODO : 성능 테스트 결과서 만들기
    토큰 
 ```
 
-## Redis Key
+### <a name="chapter-4"></a>Redis Key 
 ````
-- 쿠폰 ( key : coupon:{couponNumber}, type : Coupon )
-- API 인증을 위한 user 정보 ( key : user:{id}, type : User )  
+- 쿠폰 ( key : coupon:{couponNumber}, type : Coupon )  
 ````
 
-## Explanation of REST
+### <a name="chapter-5"></a>Explanation of REST 
 ```
 데이터에 액세스하는 표준 방법을 제공하기 위해 API는 REST를 사용합니다.
 |-------------|-----------------------------------|
@@ -125,7 +128,7 @@ TODO : 성능 테스트 결과서 만들기
 ```
 
 
-## Api Feature list
+### <a name="chapter-6"></a>Api Feature list 
 ```
 - 쿠폰을 하나 생성
 - 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
@@ -137,7 +140,7 @@ TODO : 성능 테스트 결과서 만들기
 - 쿠폰 코드를 이용해 쿠폰 정보를 조회  
 ``` 
 
-## Api Endpoint
+### <a name="chapter-6"></a>Api Endpoint
 ```
 EndPoint : /coupons
 Method : POST 
