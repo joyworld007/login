@@ -5,16 +5,21 @@ import com.kakaopay.server.domain.coupon.CouponStatus;
 import com.kakaopay.server.domain.coupon.ResultCode;
 import com.kakaopay.server.domain.coupon.converter.CouponConverter;
 import com.kakaopay.server.domain.coupon.dto.CouponDto;
+import com.kakaopay.server.domain.coupon.dto.CouponExpire;
 import com.kakaopay.server.domain.coupon.entity.Coupon;
 import com.kakaopay.server.domain.coupon.entity.CouponIssue;
 import com.kakaopay.server.repository.coupon.CouponJdbcRepository;
 import com.kakaopay.server.repository.coupon.CouponJpaRepository;
+import com.kakaopay.server.repository.coupon.CouponRedisExpireRepository;
 import com.kakaopay.server.repository.coupon.CouponRedisRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +37,8 @@ public class CouponServiceImpl implements CouponService {
   private final CouponJpaRepository couponJpaRepository;
 
   private final CouponRedisRepository couponRedisRepository;
+
+  private final CouponRedisExpireRepository couponRedisExpireRepository;
 
   final static int BATCH_SIZE = 10000;
 
@@ -80,6 +87,8 @@ public class CouponServiceImpl implements CouponService {
   public ResultCode updateCoupon(Long id, CouponDto couponDto) {
     Optional<Coupon> coupon = couponJpaRepository.findById(id);
     if (coupon.isPresent()) {
+      couponDto.setExpireDate(coupon.get().getExpireDate());
+      couponDto.setId(coupon.get().getId());
       //쿠폰 사용기간 만료 체크
       if (coupon.get().isExpired()) {
         return ResultCode.COUPON_EXPIRED;
@@ -112,6 +121,12 @@ public class CouponServiceImpl implements CouponService {
       }
       couponJpaRepository.save(coupon.get());
       couponRedisRepository.save(CouponDto.ofEntity(coupon.get()));
+
+      //쿠폰이 발급되었다면 발급일자를 기준으로 redis로 저장한다.
+      if (CouponStatus.ISSUED.equals(couponDto.getStatus())) {
+        mergeExpireCoupon(couponDto);
+      }
+
     } else {
       return ResultCode.COUPON_NOT_FOUND;
     }
@@ -164,6 +179,36 @@ public class CouponServiceImpl implements CouponService {
         return Result.builder().entry(couponDto1).build();
       } else {
         return Result.builder().entry(null).build();
+      }
+    }
+  }
+
+  @Override
+  public void mergeExpireCoupon(CouponDto couponDto) {
+    Optional<CouponExpire> couponExpire = couponRedisExpireRepository
+        .findById(couponDto.getExpireDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+    if (couponExpire.isPresent()) {
+      couponExpire.get().getCouponIdSet().add(couponDto.getId());
+      couponRedisExpireRepository.save(couponExpire.get());
+    } else {
+      Set<Long> couponIdSet = new HashSet();
+      couponIdSet.add(couponDto.getId());
+      couponRedisExpireRepository.save(CouponExpire.builder()
+          .id(couponDto.getExpireDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+          .couponIdSet(couponIdSet).build()
+      );
+    }
+  }
+
+  @Override
+  public void notifyExpireCoupon(Long day) {
+    String Date = LocalDateTime.now().plusDays(day)
+        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    Optional<CouponExpire> couponExpire = couponRedisExpireRepository.findById(Date);
+    if (couponExpire.isPresent()) {
+      Iterator<Long> it = couponExpire.get().getCouponIdSet().iterator();
+      while (it.hasNext()) {
+        log.info("쿠폰 ID {}가 {}일후 만료 됩니다.", it.next(), day);
       }
     }
   }

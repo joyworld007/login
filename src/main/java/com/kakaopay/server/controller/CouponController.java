@@ -45,6 +45,16 @@ public class CouponController {
     return CommonResponseEntity.created();
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity getCoupon(@PathVariable(value = "id") Long id) throws Exception {
+    Result<CouponDto> result = couponService.findById(id);
+    if (Optional.ofNullable(result.getEntry()).isPresent()) {
+      return CommonResponseEntity.ok(result);
+    } else {
+      return CommonResponseEntity.notFound();
+    }
+  }
+
   @PutMapping("/{id}")
   public ResponseEntity updateCoupon(@RequestBody final CouponDto couponDto,
       @PathVariable(value = "id") Long id) throws Exception {
@@ -80,14 +90,12 @@ public class CouponController {
     return CommonResponseEntity.ok(result);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity getCoupon(@PathVariable(value = "id") Long id) throws Exception {
-    Result<CouponDto> result = couponService.findById(id);
-    if (Optional.ofNullable(result.getEntry()).isPresent()) {
-      return CommonResponseEntity.ok(result);
-    } else {
-      return CommonResponseEntity.notFound();
-    }
+  @GetMapping("/notify-expire-coupons")
+  public ResponseEntity notifyExpireCoupons(
+      @RequestParam(name = "day", required = true, defaultValue = "3") Long day
+  ) throws Exception {
+    couponService.notifyExpireCoupon(day);
+    return CommonResponseEntity.ok();
   }
 
 }

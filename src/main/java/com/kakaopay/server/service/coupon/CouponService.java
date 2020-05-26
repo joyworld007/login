@@ -3,6 +3,7 @@ package com.kakaopay.server.service.coupon;
 import com.kakaopay.server.domain.common.Result;
 import com.kakaopay.server.domain.coupon.ResultCode;
 import com.kakaopay.server.domain.coupon.dto.CouponDto;
+import com.kakaopay.server.domain.coupon.entity.Coupon;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,12 @@ public interface CouponService {
   //오늘 만료된 쿠폰 list 조회
   Result<List<CouponDto>> findTodayExpiredCoupon(Pageable pageable);
 
+  void notifyExpireCoupon(Long day);
+
   //쿠폰 정보를 조회
   Result<CouponDto> findById(Long id);
+
+  //발급된 쿠폰을 만료 일자를 키로 List로 저장
+  public void mergeExpireCoupon(CouponDto couponDto);
 
 }

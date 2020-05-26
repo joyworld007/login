@@ -130,6 +130,8 @@ TODO : 성능 테스트 결과서 만들기
 
 ### <a name="chapter-6"></a>Api Feature list 
 ```
+--회원가입
+--로그인
 - 쿠폰을 하나 생성
 - 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
 - 생성된 쿠폰중 하나를 사용자에게 지급
@@ -142,7 +144,39 @@ TODO : 성능 테스트 결과서 만들기
 
 ### <a name="chapter-7"></a>Api Endpoint
 ```
-EndPoint : /coupons
+API 실행 절차
+1. 회원가입을 합니다 
+2. 로그인 후 인증 토큰을 받습니다
+3. 헤더에 userId, token 값을 넣고 Coupon API를 호출합니다
+
+EndPoint : /v1/users/signUp
+Method : POST 
+Description : 회원가입
+Return value: HTTP status 201 (Created) 
+Payload Example (required parameters)
+{
+	"userId" : "joyworld007", 
+	"password" : "12345"
+}
+
+----------------------------------------------------------------------------------------------------
+
+EndPoint : /v1/users/signIn
+Method : GET
+Description : 로그인
+Return value: HTTP status 200 (OK) 
+
+|-----------|--------------|---------------------------------------------------|---------------|
+| Parameter |Parameter Type| Description                                       | Default value |
+|-----------|--------------|---------------------------------------------------|---------------|
+| userId    | @QueryParam  | user id                                           |               |
+|-----------|--------------|---------------------------------------------------|---------------|
+| password  | @QueryParam  | user passowrd                                     |               |
+|-----------|--------------|---------------------------------------------------|---------------|
+
+----------------------------------------------------------------------------------------------------
+
+EndPoint : /v1/coupons
 Method : POST 
 Description : 쿠폰을 하나 생성
 Return value: HTTP status 201 (Created) 
@@ -151,7 +185,9 @@ Payload Example (required parameters)
 	"expireDate" : "2020-05-26T00:00:00"
 }
 
-EndPoint : /coupons/generate
+----------------------------------------------------------------------------------------------------
+
+EndPoint : /v1/coupons/generate
 Method : POST 
 Description : 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
               (쿠폰 코드 1씩 자동증가 : 초기값 1) 
@@ -164,7 +200,7 @@ Payload Example (required parameters)
 
 ----------------------------------------------------------------------------------------------------
 
-EndPoint : /coupons/{id}
+EndPoint : /v1/coupons/{id}
 Method : PUT 
 Description : 생성된 쿠폰중 하나를 사용자에게 지급 
               사용자에게 지급한 쿠폰을 사용
@@ -211,7 +247,7 @@ Response Body example
 
 ----------------------------------------------------------------------------------------------------
 
-EndPoint : /coupons
+EndPoint : /v1/coupons
 Method : GET
 Description : 사용자에게 지급된 쿠폰을 조회
 Return value: HTTP status 200 (OK) 
@@ -226,7 +262,7 @@ Return value: HTTP status 200 (OK)
 
 ----------------------------------------------------------------------------------------------------
 
-EndPoint : /coupons/today-expired-coupons
+EndPoint : /v1/coupons/today-expired-coupons
 Method : GET
 Description : 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
 Return value: HTTP status 200 (OK) 
@@ -237,7 +273,7 @@ Return value: HTTP status 200 (OK)
 | pageable  | @Pageable    | Pageable Object(size, page)                       |               |
 |-----------|--------------|---------------------------------------------------|---------------|
 
-EndPoint : /coupons/{id}
+EndPoint : /v1/coupons/{id}
 Method : GET
 Description : 쿠폰 정보 조회 ( CQRS 성능 테스트 용 )
 Return value: HTTP status 200 (OK) 

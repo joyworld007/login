@@ -50,11 +50,13 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
     if (!givenToken.equals(userToken)) {
       response.getWriter().write("Invalid Token");
       response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+      return true;
     }
     //토큰의 유효성을 검사
     if (!userService.verifyToken(givenToken, userId)) {
       response.getWriter().write("Invalid Token");
       response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+      return true;
     }
     return true;
   }

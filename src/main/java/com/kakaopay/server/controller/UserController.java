@@ -27,14 +27,14 @@ public class UserController {
   private String secretKey;
 
   @PostMapping("/signUp")
-  public ResponseEntity signup(@RequestBody UserDto userDto)
+  public ResponseEntity signUp(@RequestBody UserDto userDto)
       throws Exception {
     CommonResponseDto<UserDto> commonResponseDto = userService.signUp(userDto);
     return CommonResponseEntity.ok(commonResponseDto.getResult());
   }
 
   @GetMapping("/signIn")
-  public ResponseEntity<?> signin(
+  public ResponseEntity<?> signIn(
       @RequestParam(name = "userId", required = true) String userId
       , @RequestParam(name = "password", required = true) String password
   ) {
