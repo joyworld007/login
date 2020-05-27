@@ -1,9 +1,8 @@
 package com.kakaopay.server.service.coupon;
 
 import com.kakaopay.server.domain.common.Result;
-import com.kakaopay.server.domain.coupon.ResultCode;
+import com.kakaopay.server.domain.common.ResultCode;
 import com.kakaopay.server.domain.coupon.dto.CouponDto;
-import com.kakaopay.server.domain.coupon.entity.Coupon;
 import java.io.IOException;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -41,6 +40,6 @@ public interface CouponService {
   Result<CouponDto> findById(Long id);
 
   //발급된 쿠폰을 만료 일자를 키로 List로 저장
-  public void mergeExpireCoupon(CouponDto couponDto);
+  public void mergeCouponForExpireDate(CouponDto couponDto);
 
 }

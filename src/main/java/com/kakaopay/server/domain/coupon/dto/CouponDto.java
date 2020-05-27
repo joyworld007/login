@@ -5,7 +5,6 @@ import com.kakaopay.server.domain.coupon.entity.Coupon;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import javax.persistence.Id;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

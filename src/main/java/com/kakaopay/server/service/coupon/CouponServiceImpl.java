@@ -1,8 +1,8 @@
 package com.kakaopay.server.service.coupon;
 
 import com.kakaopay.server.domain.common.Result;
+import com.kakaopay.server.domain.common.ResultCode;
 import com.kakaopay.server.domain.coupon.CouponStatus;
-import com.kakaopay.server.domain.coupon.ResultCode;
 import com.kakaopay.server.domain.coupon.converter.CouponConverter;
 import com.kakaopay.server.domain.coupon.dto.CouponDto;
 import com.kakaopay.server.domain.coupon.dto.CouponExpire;
@@ -36,15 +36,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CouponServiceImpl implements CouponService {
 
-  private final CouponJdbcRepository couponJdbcRepository;
-
-  private final CouponJpaRepository couponJpaRepository;
-
-  private final CouponRedisRepository couponRedisRepository;
-
-  private final CouponRedisExpireRepository couponRedisExpireRepository;
-
   final static int BATCH_SIZE = 10000;
+  private final CouponJdbcRepository couponJdbcRepository;
+  private final CouponJpaRepository couponJpaRepository;
+  private final CouponRedisRepository couponRedisRepository;
+  private final CouponRedisExpireRepository couponRedisExpireRepository;
 
   @Override
   @Transactional
@@ -109,6 +105,7 @@ public class CouponServiceImpl implements CouponService {
       coupon.setStatus(CouponStatus.CREATED);
       coupon.setCreateDate(LocalDateTime.now());
       couponJpaRepository.save(coupon);
+      couponRedisRepository.save(CouponDto.ofEntity(coupon));
     } catch (Exception e) {
       return ResultCode.FAIL;
     }
@@ -119,51 +116,53 @@ public class CouponServiceImpl implements CouponService {
   @Transactional
   public ResultCode updateCoupon(Long id, CouponDto couponDto) {
     Optional<Coupon> coupon = couponJpaRepository.findById(id);
-    if (coupon.isPresent()) {
-      couponDto.setExpireDate(coupon.get().getExpireDate());
-      couponDto.setId(coupon.get().getId());
-      //쿠폰 사용기간 만료 체크
-      if (coupon.get().isExpired()) {
-        return ResultCode.COUPON_EXPIRED;
-      }
-      if (CouponStatus.ISSUED.equals(couponDto.getStatus())
-          && CouponStatus.CREATED.equals(coupon.get().getStatus())
-          && Optional.ofNullable(couponDto.getUserId()).isPresent()) {
-        //사용자 에게 쿠폰 지급
-        //쿠폰 발급일 업데이트
-        couponDto.setIssueDate(LocalDateTime.now());
-        //쿠폰을 발급 처리
-        coupon.get().setCouponIssue(CouponIssue.ofDto(couponDto));
-      } else if (CouponStatus.USED.equals(couponDto.getStatus())
-          && CouponStatus.ISSUED.equals(coupon.get().getStatus())) {
-        //쿠폰 사용 처리
-        couponDto.setIssueDate(coupon.get().getCouponIssue().getIssueDate());
-        couponDto.setUseDate(LocalDateTime.now());
-        couponDto.setUserId(coupon.get().getCouponIssue().getUserId());
-        coupon.get().setCouponUse(CouponIssue.ofDto(couponDto));
-      } else if (CouponStatus.ISSUED.equals(couponDto.getStatus())
-          && CouponStatus.USED.equals(coupon.get().getStatus())) {
-        //쿠폰 사용 취소
-        couponDto.setIssueDate(coupon.get().getCouponIssue().getIssueDate());
-        couponDto.setUserId(coupon.get().getCouponIssue().getUserId());
-        couponDto.setUseDate(null);
-        //쿠폰을 사용 취소 처리
-        coupon.get().setCouponUseCancel(CouponIssue.ofDto(couponDto));
-      } else {
-        return ResultCode.BAD_REQUEST;
-      }
-      couponJpaRepository.save(coupon.get());
-      couponRedisRepository.save(CouponDto.ofEntity(coupon.get()));
-
-      //쿠폰이 발급되었다면 발급일자를 기준으로 redis로 저장한다.
-      if (CouponStatus.ISSUED.equals(couponDto.getStatus())) {
-        mergeExpireCoupon(couponDto);
-      }
-
-    } else {
+    //쿠포 존재 여부 체크
+    if (!coupon.isPresent()) {
       return ResultCode.COUPON_NOT_FOUND;
     }
+    //쿠폰 사용기간 만료 체크
+    if (coupon.get().isExpired()) {
+      return ResultCode.COUPON_EXPIRED;
+    }
+    couponDto.setExpireDate(coupon.get().getExpireDate());
+    couponDto.setId(coupon.get().getId());
+    if (CouponStatus.ISSUED.equals(couponDto.getStatus())
+        && CouponStatus.CREATED.equals(coupon.get().getStatus())
+        && Optional.ofNullable(couponDto.getUserId()).isPresent()) {
+      //사용자 에게 쿠폰 지급
+      //쿠폰 발급일 업데이트
+      couponDto.setIssueDate(LocalDateTime.now());
+      //쿠폰을 발급 처리
+      coupon.get().issueCoupon(CouponIssue.ofDto(couponDto));
+    } else if (CouponStatus.USED.equals(couponDto.getStatus())
+        && CouponStatus.ISSUED.equals(coupon.get().getStatus())) {
+      //쿠폰 사용 처리
+      couponDto.setIssueDate(coupon.get().getCouponIssue().getIssueDate());
+      couponDto.setUseDate(LocalDateTime.now());
+      couponDto.setUserId(coupon.get().getCouponIssue().getUserId());
+      coupon.get().useCoupon(CouponIssue.ofDto(couponDto));
+    } else if (CouponStatus.ISSUED.equals(couponDto.getStatus())
+        && CouponStatus.USED.equals(coupon.get().getStatus())) {
+      //쿠폰 사용 취소
+      couponDto.setIssueDate(coupon.get().getCouponIssue().getIssueDate());
+      couponDto.setUserId(coupon.get().getCouponIssue().getUserId());
+      couponDto.setUseDate(null);
+      //쿠폰을 사용 취소 처리
+      coupon.get().cancelUsedCoupon(CouponIssue.ofDto(couponDto));
+    } else {
+      return ResultCode.BAD_REQUEST;
+    }
+    couponJpaRepository.save(coupon.get());
+    couponRedisRepository.save(CouponDto.ofEntity(coupon.get()));
+    //쿠폰이 발급되었다면 발급일자를 기준으로 redis로 저장한다.
+    if (CouponStatus.ISSUED.equals(couponDto.getStatus())) {
+      mergeCouponForExpireDate(couponDto);
+    }
     return ResultCode.SUCCESS;
+  }
+
+  public void updateCouponIssue(Coupon coupon, CouponDto couponDto) {
+
   }
 
   @Override
@@ -203,19 +202,18 @@ public class CouponServiceImpl implements CouponService {
     } else {
       // Redis에 결과가 없다면 DB에서 조회
       Optional<Coupon> coupon = couponJpaRepository.findById(id);
-      if (coupon.isPresent()) {
-        CouponDto couponDto1 = new CouponConverter().convertFromEntity(coupon.get());
-        // Redis에 저장
-        couponRedisRepository.save(couponDto1);
-        return Result.builder().entry(couponDto1).build();
-      } else {
+      if (!coupon.isPresent()) {
         return Result.builder().entry(null).build();
       }
+      CouponDto couponDto1 = new CouponConverter().convertFromEntity(coupon.get());
+      // Redis에 저장
+      couponRedisRepository.save(couponDto1);
+      return Result.builder().entry(couponDto1).build();
     }
   }
 
   @Override
-  public void mergeExpireCoupon(CouponDto couponDto) {
+  public void mergeCouponForExpireDate(CouponDto couponDto) {
     Optional<CouponExpire> couponExpire = couponRedisExpireRepository
         .findById(couponDto.getExpireDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
     if (couponExpire.isPresent()) {

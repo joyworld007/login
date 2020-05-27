@@ -39,12 +39,7 @@ public class CouponIssue {
   }
 
   public static CouponIssue ofDto(CouponDto couponDto) {
-    CouponIssue couponIssue = new CouponIssue(
-        couponDto.getUserId()
-        , couponDto.getUseDate()
-        , couponDto.getIssueDate()
-    );
-    return couponIssue;
+    return new CouponIssue(couponDto);
   }
 
 }

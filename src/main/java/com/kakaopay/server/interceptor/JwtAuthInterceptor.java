@@ -15,12 +15,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class JwtAuthInterceptor implements HandlerInterceptor {
 
-  final private UserService userService;
-
-  final private UserJpaRepository userJpaRepository;
-
   final String HEADER_TOKEN_KEY = "token";
   final String HEADER_USER_ID = "userID";
+  final private UserService userService;
+  final private UserJpaRepository userJpaRepository;
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -43,6 +41,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
     if (!user.isPresent()) {
       response.getWriter().write("Not Found User");
       response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+      return false;
     }
     String userToken = user.get().getToken();
 
@@ -50,13 +49,13 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
     if (!givenToken.equals(userToken)) {
       response.getWriter().write("Invalid Token");
       response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-      return true;
+      return false;
     }
     //토큰의 유효성을 검사
     if (!userService.verifyToken(givenToken, userId)) {
       response.getWriter().write("Invalid Token");
       response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-      return true;
+      return false;
     }
     return true;
   }

@@ -2,7 +2,7 @@ package com.kakaopay.server.controller;
 
 import com.kakaopay.server.domain.common.CommonResponseEntity;
 import com.kakaopay.server.domain.common.Result;
-import com.kakaopay.server.domain.coupon.ResultCode;
+import com.kakaopay.server.domain.common.ResultCode;
 import com.kakaopay.server.domain.coupon.dto.CouponDto;
 import com.kakaopay.server.service.coupon.CouponService;
 import java.util.List;

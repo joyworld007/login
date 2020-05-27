@@ -1,6 +1,5 @@
 package com.kakaopay.server.config;
 
-import com.kakaopay.server.interceptor.JwtAuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;

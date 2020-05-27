@@ -8,5 +8,6 @@ import lombok.Getter;
 @Getter
 @JsonIgnoreProperties
 public class Result<T> {
+
   private T entry;
 }

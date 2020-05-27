@@ -47,22 +47,40 @@ public class Coupon {
   @Embedded
   private CouponIssue couponIssue;
 
-  public void setCouponIssue(CouponIssue couponIssue) {
+  protected Coupon(CouponDto dto) {
+    this.id = dto.getId();
+    this.status = dto.getStatus();
+    this.expireDate = dto.getExpireDate();
+    this.createDate = dto.getCreateDate();
+
+    CouponIssue couponIssue = new CouponIssue(
+        dto.getUserId()
+        , dto.getUseDate()
+        , dto.getIssueDate()
+    );
+    this.issueCoupon(couponIssue);
+  }
+
+  public static Coupon ofDto(CouponDto dto) {
+    return new Coupon(dto);
+  }
+
+  public void issueCoupon(CouponIssue couponIssue) {
     this.couponIssue = couponIssue;
     this.status = CouponStatus.ISSUED;
   }
 
-  public void setCouponUse(CouponIssue couponIssue) {
+  public void useCoupon(CouponIssue couponIssue) {
     this.couponIssue = couponIssue;
     this.status = CouponStatus.USED;
   }
 
-  public void setCouponUseCancel(CouponIssue couponIssue) {
+  public void cancelUsedCoupon(CouponIssue couponIssue) {
     this.couponIssue = couponIssue;
     this.status = CouponStatus.ISSUED;
   }
 
-  public void setCouponIssueCancel() {
+  public void cancelIssuedCoupon() {
     this.couponIssue = null;
     this.status = CouponStatus.CREATED;
   }
@@ -75,24 +93,6 @@ public class Coupon {
 
   public boolean isExpired() {
     return LocalDateTime.now().isAfter(this.expireDate);
-  }
-
-  protected Coupon(CouponDto dto) {
-    this.id = dto.getId();
-    this.status = dto.getStatus();
-    this.expireDate = dto.getExpireDate();
-    this.createDate = dto.getCreateDate();
-
-    CouponIssue couponIssue = new CouponIssue(
-        dto.getUserId()
-        , dto.getUseDate()
-        , dto.getIssueDate()
-    );
-    this.setCouponIssue(couponIssue);
-  }
-
-  public static Coupon ofDto(CouponDto dto) {
-    return new Coupon(dto);
   }
 
 }

@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.kakaopay.server.domain.common.CommonResponseDto;
 import com.kakaopay.server.domain.common.Result;
-import com.kakaopay.server.domain.coupon.ResultCode;
+import com.kakaopay.server.domain.common.ResultCode;
 import com.kakaopay.server.domain.user.dto.UserDto;
 import com.kakaopay.server.domain.user.entity.User;
 import com.kakaopay.server.repository.user.UserJpaRepository;
@@ -22,12 +22,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+  final UserJpaRepository userJpaRepository;
+  final private String ISUSER = "joyworld007";
   @Value("spring.jwt.secret")
   private String secretKey;
   private Date EXPIRED_TIME = new Date(System.currentTimeMillis() + 100000 * 10);
-  final private String ISUSER = "joyworld007";
-
-  final UserJpaRepository userJpaRepository;
 
   @Override
   public CommonResponseDto signUp(UserDto userDto) {

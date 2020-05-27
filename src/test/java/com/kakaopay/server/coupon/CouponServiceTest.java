@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-import com.kakaopay.server.domain.coupon.ResultCode;
+import com.kakaopay.server.domain.common.ResultCode;
 import com.kakaopay.server.repository.coupon.CouponJdbcRepository;
 import com.kakaopay.server.repository.coupon.CouponJpaRepository;
 import com.kakaopay.server.repository.coupon.CouponRedisRepository;
