@@ -4,6 +4,7 @@ import com.kakaopay.server.domain.common.Result;
 import com.kakaopay.server.domain.coupon.ResultCode;
 import com.kakaopay.server.domain.coupon.dto.CouponDto;
 import com.kakaopay.server.domain.coupon.entity.Coupon;
+import java.io.IOException;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,9 @@ public interface CouponService {
   // size 만큼 쿠폰 생성
   @Transactional
   ResultCode generate(Long size);
+
+  @Transactional
+  ResultCode generateCsv() throws IOException;
 
   @Transactional
   ResultCode create(CouponDto coupon);

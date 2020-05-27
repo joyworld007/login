@@ -38,6 +38,13 @@ public class CouponController {
     return CommonResponseEntity.created();
   }
 
+  @PostMapping("generate/csv")
+  public ResponseEntity generate()
+      throws Exception {
+    couponService.generateCsv();
+    return CommonResponseEntity.created();
+  }
+
   @PostMapping
   public ResponseEntity create(@RequestBody CouponDto couponDto)
       throws Exception {
@@ -68,9 +75,7 @@ public class CouponController {
               ResultCode.COUPON_EXPIRED.toString(), "Coupon is Expired"
           );
         case "COUPON_NOT_FOUND":
-          if ("".equals(resultcode.toString())) {
-            return CommonResponseEntity.notFound();
-          }
+          return CommonResponseEntity.notFound();
       }
     }
     return CommonResponseEntity.ok();

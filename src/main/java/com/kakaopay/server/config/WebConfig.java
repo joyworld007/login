@@ -16,11 +16,14 @@ public class WebConfig implements WebMvcConfigurer {
   private HandlerInterceptor interceptor;
 
   private String[] INTERCEPTOR_WHITE_LIST = {
-      "/**/signUp/**",
-      "/**/signIn/**",
-      "/**/coupons/generate/**"
+      "/v1/users/signUp",
+      "/v1/users/signIn",
+      "/v1/coupons/generate/**",
+      "/v2/api-docs",
+      "/swagger-resources/**",
+      "/swagger-ui.html",
+      "/webjars/**"
   };
-
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {

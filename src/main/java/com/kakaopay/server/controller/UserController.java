@@ -34,11 +34,11 @@ public class UserController {
   }
 
   @GetMapping("/signIn")
-  public ResponseEntity<?> signIn(
+  public ResponseEntity signIn(
       @RequestParam(name = "userId", required = true) String userId
       , @RequestParam(name = "password", required = true) String password
   ) {
-    CommonResponseDto commonResponseDto = userService.signIn(userId, password);
+    CommonResponseDto<String> commonResponseDto = userService.signIn(userId, password);
     return CommonResponseEntity.ok(commonResponseDto.getResult());
   }
 

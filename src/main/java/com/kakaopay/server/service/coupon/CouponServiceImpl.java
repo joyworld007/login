@@ -12,6 +12,10 @@ import com.kakaopay.server.repository.coupon.CouponJdbcRepository;
 import com.kakaopay.server.repository.coupon.CouponJpaRepository;
 import com.kakaopay.server.repository.coupon.CouponRedisExpireRepository;
 import com.kakaopay.server.repository.coupon.CouponRedisRepository;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -23,13 +27,13 @@ import java.util.Set;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@SuppressWarnings("unchecked")
 public class CouponServiceImpl implements CouponService {
 
   private final CouponJdbcRepository couponJdbcRepository;
@@ -58,6 +62,35 @@ public class CouponServiceImpl implements CouponService {
         if (i % BATCH_SIZE == 0) {
           couponJdbcRepository.createCoupon(couponDtoList);
           expireDate = LocalDateTime.now().plusDays(1);
+          couponDtoList.clear();
+        }
+      }
+      couponJdbcRepository.createCoupon(couponDtoList);
+    } catch (Exception e) {
+      return ResultCode.FAIL;
+    }
+    return ResultCode.SUCCESS;
+  }
+
+  @Override
+  @Transactional
+  public ResultCode generateCsv() throws IOException {
+    List<CouponDto> couponDtoList = new ArrayList<>();
+    CouponDto couponDto;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    InputStream resource = new ClassPathResource("coupon.csv").getInputStream();
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
+      String line = "";
+      int i = 0;
+      while ((line = reader.readLine()) != null) {
+        i++;
+        String array[] = line.split(",");
+        couponDtoList
+            .add(CouponDto.builder()
+                .status(CouponStatus.CREATED)
+                .expireDate(LocalDateTime.parse(array[1], formatter)).build());
+        if (i % BATCH_SIZE == 0) {
+          couponJdbcRepository.createCoupon(couponDtoList);
           couponDtoList.clear();
         }
       }
