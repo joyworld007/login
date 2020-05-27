@@ -1,11 +1,15 @@
 package com.kakaopay.server.coupon;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import com.kakaopay.server.domain.common.ResultCode;
+import com.kakaopay.server.domain.coupon.CouponStatus;
+import com.kakaopay.server.domain.coupon.dto.CouponDto;
+import com.kakaopay.server.domain.coupon.entity.Coupon;
 import com.kakaopay.server.repository.coupon.CouponJdbcRepository;
 import com.kakaopay.server.repository.coupon.CouponJpaRepository;
 import com.kakaopay.server.repository.coupon.CouponRedisRepository;
@@ -35,6 +39,9 @@ public class CouponServiceTest {
   @InjectMocks
   private CouponServiceImpl couponService;
 
+  private CouponDto couponDto;
+  private Coupon coupon;
+
   @BeforeEach
   public void setup(TestInfo testInfo) {
     rawSetup(testInfo);
@@ -43,11 +50,10 @@ public class CouponServiceTest {
   private void rawSetup(TestInfo testInfo) {
 
     Method method = testInfo.getTestMethod().orElseThrow();
+    couponDto = CouponDto.builder()
+        .status(CouponStatus.CREATED).build();
+    coupon = Coupon.ofDto(couponDto);
 
-    switch (method.getName()) {
-      case "generate":
-        break;
-    }
   }
 
   @DisplayName("Coupon Generate Test")
@@ -61,6 +67,32 @@ public class CouponServiceTest {
     ResultCode resultCode = couponService.generate(anyLong());
     // then
     assertThat(resultCode).isEqualTo(ResultCode.SUCCESS);
+  }
+
+  @DisplayName("Coupon create Test")
+  @Test
+  public void couponCreateTest() {
+
+    // given
+    when(couponJpaRepository.save(any())).thenReturn(coupon);
+    when(couponRedisRepository.save(any())).thenReturn(couponDto);
+    ResultCode resultCode = couponService.create(couponDto);
+    // then
+    assertThat(resultCode).isEqualTo(ResultCode.SUCCESS);
+  }
+
+  @DisplayName("Coupon create Exception Test")
+  @Test
+  public void couponCreateExceptionTest() {
+    CouponDto couponDto = CouponDto.builder()
+        .status(CouponStatus.CREATED).build();
+    Coupon coupon = Coupon.ofDto(couponDto);
+    // given
+    when(couponJpaRepository.save(any())).thenReturn(coupon);
+    when(couponRedisRepository.save(any())).thenThrow(new RuntimeException());
+    ResultCode resultCode = couponService.create(couponDto);
+    // then
+    assertThat(resultCode).isEqualTo(ResultCode.FAIL);
   }
 
 
