@@ -4,12 +4,13 @@
 ## 목차
 * [Specifications](#chapter-1)
 * [Strategy](#chapter-2)
-* [Domain 설계](#chapter-3)
-* [Redis Key](#chapter-4)
-* [Explanation of REST](#chapter-5)
-* [Api Feature list](#chapter-6)
-* [Api Endpoint](#chapter-7)
-* [Performance Test](#chapter-8)
+* [Domain](#chapter-3)
+* [Entity](#chapter-4)
+* [Redis Key](#chapter-5)
+* [Explanation of REST](#chapter-6)
+* [Api Feature list](#chapter-7)
+* [Api Endpoint](#chapter-8)
+* [Performance Test](#chapter-9)
 
 
 ### <a name="chapter-1"></a>Specifications 
@@ -73,7 +74,7 @@ TODO : 성능 테스트 결과서 만들기 [완료]
 ---------------------------------------------- 옵션 과제 ---------------------------------------------
 ````
 
-### <a name="chapter-3"></a>Domain 설계 
+### <a name="chapter-3"></a>Domain 
 ```
 쿠폰(Coupon) 
    쿠폰번호
@@ -82,7 +83,6 @@ TODO : 성능 테스트 결과서 만들기 [완료]
    생성일
 
 쿠폰발급(CouponIssue)
-   쿠폰번호
    유저아이디
    사용일
    발급일
@@ -93,7 +93,7 @@ TODO : 성능 테스트 결과서 만들기 [완료]
    토큰 
 ```
 
-## Entity 설계
+## <a name="chapter-4"></a>Entity
 ```
 쿠폰(Coupon) 
    쿠폰번호
@@ -110,13 +110,13 @@ TODO : 성능 테스트 결과서 만들기 [완료]
    토큰 
 ```
 
-### <a name="chapter-4"></a>Redis Key 
+### <a name="chapter-5"></a>Redis Key
 ````
 - 쿠폰( key : 쿠폰 ID, type : 쿠폰 Object)  
 - 해당 일자에 만료되는 쿠폰(key : 만료일자, type : 쿠폰 ID 리스트)
 ````
 
-### <a name="chapter-5"></a>Explanation of REST 
+### <a name="chapter-6"></a>Explanation of REST 
 ```
 데이터에 액세스하는 표준 방법을 제공하기 위해 API는 REST를 사용합니다.
 |-------------|-----------------------------------|
@@ -130,7 +130,7 @@ TODO : 성능 테스트 결과서 만들기 [완료]
 ```
 
 
-### <a name="chapter-6"></a>Api Feature list 
+### <a name="chapter-7"></a>Api Feature list 
 ```
 --회원가입
 --로그인
@@ -146,7 +146,7 @@ TODO : 성능 테스트 결과서 만들기 [완료]
 - 쿠폰 코드를 이용해 쿠폰 정보를 조회
 ``` 
 
-### <a name="chapter-7"></a>Api Endpoint
+### <a name="chapter-8"></a>Api Endpoint
 ```
 API 실행 절차
 1. 회원가입을 합니다 
@@ -313,7 +313,7 @@ Return value: HTTP status 200 (OK)
 
 ```
 
-### <a name="chapter-8"></a>Performance Test
+### <a name="chapter-9"></a>Performance Test
 Embed DB내 쿠폰 100000개 생성 테스트 결과 
 <img src="src/docs/1.png" witdh="100%" height="100%">
 
