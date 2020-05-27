@@ -314,6 +314,13 @@ Return value: HTTP status 200 (OK)
 ```
 
 ### <a name="chapter-8"></a>Performance Test
-Embed DB내 쿠폰 100000개 생성 테스트 (약 11초 소요) 
+Embed DB내 쿠폰 100000개 생성 테스트 결과 
 <img src="src/docs/1.png" witdh="100%" height="100%">
 
+조회 성능 테스트 결과 
+Total Vusers : 99, 테스트 횟수 : 10, 스레드 : 3 
+<img src="src/docs/2.png" witdh="100%" height="100%">
+
+
+ 
+ 
