@@ -90,7 +90,7 @@ public class CouponController {
   }
 
   @GetMapping("/today-expired-coupons")
-  public ResponseEntity getTodayExpireCoupon(Pageable pageable) throws Exception {
+  public ResponseEntity getTodayExpireCoupon(@RequestBody Pageable pageable) throws Exception {
     Result<List<CouponDto>> result = couponService.findTodayExpiredCoupon(pageable);
     return CommonResponseEntity.ok(result);
   }

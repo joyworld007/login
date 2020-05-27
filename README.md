@@ -9,6 +9,7 @@
 * [Explanation of REST](#chapter-5)
 * [Api Feature list](#chapter-6)
 * [Api Endpoint](#chapter-7)
+* [Performance Test](#chapter-8)
 
 
 ### <a name="chapter-1"></a>Specifications 
@@ -311,3 +312,8 @@ Return value: HTTP status 200 (OK)
 |-----------|--------------|---------------------------------------------------|---------------|
 
 ```
+
+### <a name="chapter-8"></a>Performance Test
+Embed DB내 쿠폰 100000개 생성 테스트 (약 11초 소요) 
+<img src="src/docs/1.png" witdh="100%" height="100">
+
