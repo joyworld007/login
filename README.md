@@ -44,7 +44,7 @@ TODO : 기본 API 구현 [완료]
 - 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
 - 만료 N일전 쿠폰을 조회하여 알림 
 
-TODO 단위 테스트 코드 작성 [완료]
+TODO : 단위 테스트 코드 작성 [완료]
 - MockBean을 이용한 CouponService 비지니스 로직 테스트
 - JacocotestReport 코드 커버리지 체크
 
