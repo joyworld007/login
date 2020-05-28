@@ -11,6 +11,7 @@
 * [Api Feature list](#chapter-7)
 * [Api Endpoint](#chapter-8)
 * [Performance Test](#chapter-9)
+* [How to run](#chapter-10)
 
 
 ### <a name="chapter-1"></a>Specifications 
@@ -28,7 +29,6 @@
 ### <a name="chapter-2"></a>Strategy 
 ````
 ---------------------------------------------- 기본 과제 ---------------------------------------------
-
 기본 전략 
 - DDD를 적용하기 위해 DB Entity는 한개지만 쿠폰과, 쿠폰발급 도메인으로 비지니스 로직을 분리 
 - 쿠폰 생성 시 대용량 Insert를 위해 jdbc batch update를 구현 
@@ -318,9 +318,20 @@ Embed DB내 쿠폰 100000개 생성 테스트 결과
 <img src="src/docs/1.png" witdh="100%" height="100%">
 
 조회 성능 테스트 결과 
-Total Vusers : 99, 테스트 횟수 : 10, 스레드 : 3 
+Total 가상유저 : 99, 테스트 횟수 : 10, 스레드 : 3 
 <img src="src/docs/2.png" witdh="100%" height="100%">
 
+### ### <a name="chapter-9">How to Run
+```
+1. 실행
+./gradlew bootrun
 
+2. Test 
+./gradlew test
+./gradlew jacocoTestReport
+
+3. Swagger URI
+http://localhost:8080/swagger-ui.html
+```
  
  
