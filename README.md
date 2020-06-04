@@ -1,7 +1,7 @@
 # 카카오 페이 서버 개발 과제
 ## Rest API 기반 쿠폰시스템
 
-## 목차
+## Contents
 * [Specifications](#chapter-1)
 * [Strategy](#chapter-2)
 * [Domain](#chapter-3)
