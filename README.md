@@ -59,8 +59,8 @@ TODO : JWT 웹 토큰을 통한 인증하기 [완료]
 - API 호출 시 token 값 유효성 여부 검증 하는 Interceptor 구현 
 
 TODO : 트래픽(성능)을 고려한 설계 (쿠폰 데이터 100억개 이상, API TPS 10K이상 ) [완료] 
-전략 : EMBED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현하기
-- Coupon 정보를 id를 키로 embed redis에 저장 ( 쿠폰 조회시 사용 ) 
+전략 : EMBEDED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현하기
+- Coupon 정보를 id를 키로 embeded redis에 저장 ( 쿠폰 조회시 사용 ) 
 
 TODO : 만료 N일전 쿠폰을 조회하여 알림 [완료]
 전략 : 만료일을 키로 Redis에 저장 조회된 쿠폰 정보를 기준 System.out 출력
