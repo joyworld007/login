@@ -20,8 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
       "/v1/coupons/generate/**",
       "/v2/api-docs",
       "/swagger-resources/**",
-      "/swagger-ui.html",
-      "/webjars/**"
+      "/swagger-ui.html"
   };
 
   @Override
