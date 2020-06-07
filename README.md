@@ -51,9 +51,8 @@ REST API 기반 쿠폰 시스템
 ````
 
 ### <a name="chapter-3"></a>Strategy 
-````
-기본 전략 
-- DDD를 적용하기 위해 DB Entity는 한개지만 쿠폰과, 쿠폰발급 도메인으로 비지니스 로직을 분리  
+```` 
+- DDD를 적용 / 쿠폰, 쿠폰발급 도메인으로 분리  
 - Embeded H2 DB, Embeded Redis 를 사용
 - 기본 적인 REST API 구현  
 - 쿠폰 생성 시 대용량 Insert를 위해 jdbc batch update를 구현
