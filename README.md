@@ -3,15 +3,16 @@
 
 ## Contents
 * [Specifications](#chapter-1)
-* [Strategy](#chapter-2)
-* [Domain](#chapter-3)
-* [Entity](#chapter-4)
-* [Redis Key](#chapter-5)
-* [Explanation of REST](#chapter-6)
-* [Api Feature list](#chapter-7)
-* [Api Endpoint](#chapter-8)
-* [Performance Test](#chapter-9)
-* [How to run](#chapter-10)
+* [Requirement](#chapter-2) 
+* [Strategy](#chapter-3)
+* [Domain](#chapter-4)
+* [Entity](#chapter-5)
+* [Redis Key](#chapter-6)
+* [Explanation of REST](#chapter-7)
+* [Api Feature list](#chapter-8)
+* [Api Endpoint](#chapter-9)
+* [Performance Test](#chapter-10)
+* [How to run](#chapter-11)
 
 
 ### <a name="chapter-1"></a>Specifications 
@@ -25,16 +26,10 @@
  Domain Driven Design
  CQRS Pettern
 ````
-
-### <a name="chapter-2"></a>Strategy 
+### <a name="chapter-2"></a>Requirement 
 ````
----------------------------------------------- 기본 과제 ---------------------------------------------
-기본 전략 
-- DDD를 적용하기 위해 DB Entity는 한개지만 쿠폰과, 쿠폰발급 도메인으로 비지니스 로직을 분리 
-- 쿠폰 생성 시 대용량 Insert를 위해 jdbc batch update를 구현 
-- RESTFUL API 구현  
-
-TODO : 기본 API 구현 [완료] 
+REST API 기반 쿠폰 시스템
+기본 과제
 - 쿠폰을 하나 생성
 - 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
 - 생성된 쿠폰중 하나를 사용자에게 지급
@@ -44,37 +39,43 @@ TODO : 기본 API 구현 [완료]
 - 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
 - 만료 N일전 쿠폰을 조회하여 알림 
 
-TODO : 단위 테스트 코드 작성 [완료]
-- MockBean을 이용한 CouponService 비지니스 로직 테스트
-- JacocotestReport 코드 커버리지 체크
+옵션 과제
+- JWT 웹 토큰을 이용한 회원가입, 로그인, API 인증 구현
+- 회원가입 구현 ( 패스워드 안전한 방법으로 저장 )
+- signup, signin 구현   
+- API 호출 시 Http Header 발급 받은 token 값을 이용 
+- 트래픽(성능)을 고려한 설계 (쿠폰 데이터 100억개 이상, API TPS 10K이상 )  
+- 만료 N일전 쿠폰을 조회하여 알림 
+- 10만개 이상 벌크 Insert 구현하기 
+- 성능 테스트 결과서 만들기 
+````
 
----------------------------------------------- 기본 과제 ---------------------------------------------
+### <a name="chapter-3"></a>Strategy 
+````
+기본 전략 
+- DDD를 적용하기 위해 DB Entity는 한개지만 쿠폰과, 쿠폰발급 도메인으로 비지니스 로직을 분리  
+- Embeded H2 DB, Embeded Redis 를 사용
+- 기본 적인 REST API 구현  
+- 쿠폰 생성 시 대용량 Insert를 위해 jdbc batch update를 구현
 
----------------------------------------------- 옵션 과제 ---------------------------------------------
-
-TODO : JWT 웹 토큰을 통한 인증하기 [완료]
 - JWT 웹 토큰을 이용한 회원가입, 로그인, API 인증 구현
 - 회원가입 구현 ( 패스워드 SHA-512 단방향 암호화 하여 저장 )
 - 로그인 구현 ( 로그인 후 토큰값 리턴 ) 
 - API 호출 시 token 값 유효성 여부 검증 하는 Interceptor 구현 
 
-TODO : 트래픽(성능)을 고려한 설계 (쿠폰 데이터 100억개 이상, API TPS 10K이상 ) [완료] 
-전략 : EMBEDED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현하기
+- EMBEDED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현
 - Coupon 정보를 id를 키로 embeded redis에 저장 ( 쿠폰 조회시 사용 ) 
 
-TODO : 만료 N일전 쿠폰을 조회하여 알림 [완료]
-전략 : 만료일을 키로 Redis에 저장 조회된 쿠폰 정보를 기준 System.out 출력
+- 만료 N일전 쿠폰을 조회
+- 만료일을 키로 Redis에 저장 조회된 쿠폰 정보를 기준 System.out 출력
 
-TODO : 10만개 이상 벌크 Insert 구현하기 [완료]
-전략 : csv 파일을 읽고(load file) DB 저장(jdbc batch update) 구현
+- 10만개 이상 벌크 Insert 구현하기 [완료]
+- csv 파일을 읽고 DB 저장(jdbc batch update)구현
 
-TODO : 성능 테스트 결과서 만들기 [완료]
-전략 : nGrinder를 이용해 성능 테스트 
- 
----------------------------------------------- 옵션 과제 ---------------------------------------------
+- 성능 테스트 결과서 : nGrinder를 이용해 성능 테스트 및 리포트 출력 
 ````
 
-### <a name="chapter-3"></a>Domain 
+### <a name="chapter-4"></a>Domain 
 ```
 쿠폰(Coupon) 
    쿠폰번호
@@ -93,7 +94,7 @@ TODO : 성능 테스트 결과서 만들기 [완료]
    토큰 
 ```
 
-## <a name="chapter-4"></a>Entity
+## <a name="chapter-5"></a>Entity
 ```
 쿠폰(Coupon) 
    쿠폰번호
@@ -110,27 +111,21 @@ TODO : 성능 테스트 결과서 만들기 [완료]
    토큰 
 ```
 
-### <a name="chapter-5"></a>Redis Key
+### <a name="chapter-6"></a>Redis Key
 ````
-- 쿠폰( key : 쿠폰 ID, type : 쿠폰 Object)  
+- 쿠폰( key : 쿠폰 ID, type : 쿠폰 )  
 - 해당 일자에 만료되는 쿠폰(key : 만료일자, type : 쿠폰 ID 리스트)
 ````
 
-### <a name="chapter-6"></a>Explanation of REST 
-```
-데이터에 액세스하는 표준 방법을 제공하기 위해 API는 REST를 사용합니다.
-|-------------|-----------------------------------|
-| HTTP Method |  Usage                            |
-|-------------|-----------------------------------|
-| GET         | Receive a read-only data          |
-| PUT         | Overwrite an existing resource    |
-| POST        | Creates a new resource            |
-| DELETE      | Deletes the given resource        |
-|-------------|-----------------------------------|
-```
+### <a name="chapter-7"></a>Explanation of REST 
+|HTTP Method|Usage|
+|:---|:---|
+|GET   |Receive a read-only data      |
+|PUT   |Overwrite an existing resource|
+|POST  |Creates a new resource        |
+|DELETE|Deletes the given resource    |
 
-
-### <a name="chapter-7"></a>Api Feature list 
+### <a name="chapter-8"></a>Api Feature list 
 ```
 - 회원가입
 - 로그인
@@ -146,7 +141,7 @@ TODO : 성능 테스트 결과서 만들기 [완료]
 - 쿠폰 코드를 이용해 쿠폰 정보를 조회
 ``` 
 
-### <a name="chapter-8"></a>Api Endpoint
+### <a name="chapter-9"></a>Api Endpoint
 ```
 API 실행 절차
 1. 회원가입을 합니다 
@@ -313,7 +308,7 @@ Return value: HTTP status 200 (OK)
 
 ```
 
-### <a name="chapter-9"></a>Performance Test
+### <a name="chapter-10"></a>Performance Test
 Embeded DB내 쿠폰 100000개 생성 테스트 
 <img src="src/docs/1.png" witdh="100%" height="100%">
 
@@ -321,7 +316,7 @@ Embeded DB내 쿠폰 100000개 생성 테스트
 Total 가상유저 : 99, 테스트 횟수 : 10, 스레드 : 3 
 <img src="src/docs/2.png" witdh="100%" height="100%">
 
-### <a name="chapter-10"></a>How to Run
+### <a name="chapter-11"></a>How to Run
 ```
 1. 실행
 ./gradlew bootrun
