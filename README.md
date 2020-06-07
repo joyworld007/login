@@ -58,18 +58,18 @@ REST API 기반 쿠폰 시스템
 - 기본 적인 REST API 구현  
 - 쿠폰 생성 시 대용량 Insert를 위해 jdbc batch update를 구현
 
-- JWT 웹 토큰을 이용한 회원가입, 로그인, API 인증 구현
 - 회원가입 구현 ( 패스워드 SHA-512 단방향 암호화 하여 저장 )
-- 로그인 구현 ( 로그인 후 토큰값 리턴 ) 
+- 로그인 구현 ( 로그인 후 JWT 토큰 제공 ) 
 - API 호출 시 token 값 유효성 여부 검증 하는 Interceptor 구현 
 
 - EMBEDED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현
-- Coupon 정보를 id를 키로 embeded redis에 저장 ( 쿠폰 조회시 사용 ) 
+- Coupon Id를 키로 embeded redis에 저장 ( 쿠폰 조회시 사용 ) 
 
 - 만료 N일전 쿠폰을 조회
-- 만료일을 키로 Redis에 저장 조회된 쿠폰 정보를 기준 System.out 출력
+- 만료일을 키로 Redis에 저장하고 만료일 기준으로 조회된 쿠폰 정보를 출력
 
-- 10만개 이상 벌크 Insert 구현하기 [완료]
+- 10만개 이상 벌크 Insert 구현하기
+- Test code를 이용 conpon 10만개 csv 파일 생성
 - csv 파일을 읽고 DB 저장(jdbc batch update)구현
 
 - 성능 테스트 결과서 : nGrinder를 이용해 성능 테스트 및 리포트 출력 
@@ -127,23 +127,23 @@ REST API 기반 쿠폰 시스템
 
 ### <a name="chapter-8"></a>Api Feature list 
 ```
+- 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
 - 회원가입
 - 로그인
 - 쿠폰을 하나 생성
-- 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관
-- CSV 파일을 읽고 10만개 쿠폰 정보 Insert
+- 쿠폰 코드를 이용해 쿠폰 정보를 조회
 - 생성된 쿠폰중 하나를 사용자에게 지급
 - 사용자에게 지급된 쿠폰을 조회
 - 지급된 쿠폰중 하나를 사용  (쿠폰 재사용은 불가) 
 - 지급된 쿠폰중 하나를 사용 취소 (취소된 쿠폰 재사용 가능)
 - 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
 - 만료 N일전 쿠폰을 조회하여 알림
-- 쿠폰 코드를 이용해 쿠폰 정보를 조회
+- CSV 파일을 읽고 10만개 쿠폰 정보 Insert
 ``` 
 
 ### <a name="chapter-9"></a>Api Endpoint
 ```
-API 실행 절차
+API 실행 && 테스트 절차
 1. 회원가입을 합니다 
 2. 로그인 후 인증 토큰을 받습니다
 3. 헤더에 userId, token 값을 넣고 각 Coupon API를 호출합니다
@@ -313,7 +313,7 @@ Embeded DB내 쿠폰 100000개 생성 테스트
 <img src="src/docs/1.png" witdh="100%" height="100%">
 
 쿠폰 조회 성능 테스트 
-Total 가상유저 : 99, 테스트 횟수 : 10, 스레드 : 3 
+가상유저 : 99, 테스트 횟수 : 10, 스레드 : 3 
 <img src="src/docs/2.png" witdh="100%" height="100%">
 
 ### <a name="chapter-11"></a>How to Run
