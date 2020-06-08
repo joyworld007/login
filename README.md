@@ -43,7 +43,7 @@ REST API 기반 쿠폰 시스템
 - JWT 웹 토큰을 이용한 회원가입, 로그인, API 인증 구현
 - 회원가입 구현 ( 패스워드 안전한 방법으로 저장 )
 - signup, signin 구현   
-- API 호출 시 Http Header 발급 받은 token 값을 이용 
+- API 호출 시 발급 받은 Token을 이용해 인증처리 
 - 트래픽(성능)을 고려한 설계 (쿠폰 데이터 100억개 이상, API TPS 10K이상 )  
 - 만료 N일전 쿠폰을 조회하여 알림 
 - 10만개 이상 벌크 Insert 구현하기 
@@ -145,9 +145,9 @@ REST API 기반 쿠폰 시스템
 API 실행 && 테스트 절차
 1. 회원가입을 합니다 
 2. 로그인 후 인증 토큰을 받습니다
-3. 헤더에 userId, token 값을 넣고 각 Coupon API를 호출합니다
+3. Header userId, Authorization Header Bearer Token 값을 넣고 각 Coupon API를 호출합니다
 
-EndPoint : /v1/users/signUp
+EndPoint : /v1/users/signup
 Method : POST 
 Description : 회원가입
 Return value: HTTP status 201 (Created) 
@@ -159,19 +159,15 @@ Payload Example (required parameters)
 
 ----------------------------------------------------------------------------------------------------
 
-EndPoint : /v1/users/signIn
-Method : GET
+EndPoint : /v1/users/signin
+Method : POST
 Description : 로그인
 Return value: HTTP status 200 (OK) 
-
-|-----------|--------------|---------------------------------------------------|
-| Parameter |Parameter Type| Description                                       |
-|-----------|--------------|---------------------------------------------------|
-| userId    | @QueryParam  | user id                                           |
-|-----------|--------------|---------------------------------------------------|
-| password  | @QueryParam  | user passowrd                                     |
-|-----------|--------------|---------------------------------------------------|
-
+Payload Example (required parameters)
+{
+	"userId" : "joyworld007", 
+	"password" : "12345"
+}
 ----------------------------------------------------------------------------------------------------
 
 EndPoint : /v1/coupons

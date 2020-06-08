@@ -5,9 +5,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.Test;
 
-@SpringBootTest
 public class csvWriter {
 
   //@Test
@@ -16,7 +15,7 @@ public class csvWriter {
 
     OutputStream outStream = new FileOutputStream("coupon.csv", true);
     for (int i = 0; i < 100000; i++) {
-      outStream.write((i + "," + LocalDateTime.now().plusDays(10).format(formatter)).getBytes());
+      outStream.write((i + "," + LocalDateTime.now().plusDays(1).format(formatter)).getBytes());
       outStream.write("\r\n".getBytes());
     }
     outStream.close();

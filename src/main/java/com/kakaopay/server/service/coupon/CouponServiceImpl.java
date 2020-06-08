@@ -48,6 +48,7 @@ public class CouponServiceImpl implements CouponService {
 
     LocalDateTime expireDate = LocalDateTime.now();
     List<CouponDto> couponDtoList = new ArrayList<>();
+    int plusDay = 1;
     try {
       for (long i = 1; i <= size; i++) {
         couponDtoList.add(
@@ -57,7 +58,7 @@ public class CouponServiceImpl implements CouponService {
         );
         if (i % BATCH_SIZE == 0) {
           couponJdbcRepository.createCoupon(couponDtoList);
-          expireDate = LocalDateTime.now().plusDays(1);
+          expireDate = LocalDateTime.now().plusDays(plusDay++);
           couponDtoList.clear();
         }
       }

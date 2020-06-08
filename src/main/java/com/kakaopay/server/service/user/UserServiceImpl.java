@@ -33,15 +33,17 @@ public class UserServiceImpl implements UserService {
     try {
       //중복 체크
       if (verifyDuplicatedUser(userDto.getUserId())) {
-        CommonResponseDto.builder().message(ResultCode.DUPLICATED_USER.toString());
+        return CommonResponseDto.builder().message(ResultCode.DUPLICATED_USER.toString()).build();
       }
       userDto.setToken(createToken(userDto.getUserId()));
       userDto.setPassword(encrypt(userDto.getPassword()));
       userJpaRepository.save(User.ofDto(userDto));
     } catch (Exception e) {
-      CommonResponseDto.builder().message(ResultCode.FAIL.toString());
+      return CommonResponseDto.builder().message(ResultCode.FAIL.toString()).build();
     }
-    return CommonResponseDto.builder().result(Result.builder().entry(userDto).build()).build();
+    return CommonResponseDto.builder()
+        .message(ResultCode.SUCCESS.toString())
+        .result(Result.builder().entry(userDto).build()).build();
   }
 
   @Override
@@ -51,27 +53,20 @@ public class UserServiceImpl implements UserService {
       if (user.isPresent()) {
         //비밀번호 체크
         if (!encrypt(password).equals(user.get().getPassword())) {
-          return CommonResponseDto.builder().result(
-              Result.builder().entry(
-                  ResultCode.LOGIN_FAIL.toString()).build()
-          ).build();
+          return CommonResponseDto.builder().message(ResultCode.LOGIN_FAIL.toString()).build();
         }
-        //로그인 성공 하였다 토큰을 재 발급 하고 저장
+        //로그인 성공 토큰 재 발급
         user.get().setToken(createToken(userId));
         userJpaRepository.save(user.get());
       } else {
-        return CommonResponseDto.builder().result(
-            Result.builder().entry(
-                ResultCode.USER_NOT_FOUND.toString()).build()
-        ).build();
+        return CommonResponseDto.builder().message(ResultCode.USER_NOT_FOUND.toString()).build();
       }
     } catch (Exception e) {
-      return CommonResponseDto.builder().result(
-          Result.builder().entry(
-              ResultCode.FAIL.toString()).build()
-      ).build();
+      return CommonResponseDto.builder().message(ResultCode.FAIL.toString()).build();
     }
-    return CommonResponseDto.builder().result(Result.builder().entry(user).build()).build();
+    return CommonResponseDto.builder()
+        .message(ResultCode.SUCCESS.toString())
+        .result(Result.builder().entry(user).build()).build();
   }
 
   public String createToken(String userId) {
@@ -115,7 +110,7 @@ public class UserServiceImpl implements UserService {
   }
 
   private boolean verifyDuplicatedUser(String userId) {
-    return Optional.ofNullable(userJpaRepository.findById(userId)).isPresent();
+    return userJpaRepository.findById(userId).isPresent();
   }
 
 

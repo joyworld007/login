@@ -15,8 +15,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class JwtAuthInterceptor implements HandlerInterceptor {
 
-  final String HEADER_TOKEN_KEY = "token";
-  final String HEADER_USER_ID = "userID";
+  final static String HEADER_USER_ID = "userID";
+  static final String HEADER_STRING = "Authorization";
+  static final String TOKEN_PREFIX = "Bearer ";
   final private UserService userService;
   final private UserJpaRepository userJpaRepository;
 
@@ -31,12 +32,14 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
     }
     String userId = request.getHeader(HEADER_USER_ID);
 
-    if (!Optional.ofNullable(request.getHeader(HEADER_TOKEN_KEY)).isPresent()) {
-      response.getWriter().write("Header token Must be not null");
+    if (!Optional.ofNullable(request.getHeader(HEADER_STRING)).isPresent()) {
+      response.getWriter().write("Header Authorization Must be not null");
       response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
       return false;
     }
-    String givenToken = request.getHeader(HEADER_TOKEN_KEY);
+
+    String givenToken = request.getHeader(HEADER_STRING).replace(TOKEN_PREFIX, "");
+
     Optional<User> user = userJpaRepository.findById(userId);
     if (!user.isPresent()) {
       response.getWriter().write("Not Found User");

@@ -15,8 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
   private HandlerInterceptor interceptor;
 
   private String[] INTERCEPTOR_WHITE_LIST = {
-      "/v1/users/signUp",
-      "/v1/users/signIn",
+      "/v1/users/signup/**",
+      "/v1/users/signin/**",
       "/v1/coupons/generate/**",
       "/v2/api-docs",
       "/swagger-resources/**",
