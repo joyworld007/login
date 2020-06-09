@@ -53,7 +53,7 @@ REST API 기반 쿠폰 시스템
 ### <a name="chapter-3"></a>Strategy 
 ```` 
 - DDD(Domain Driven Design) 적용 / 쿠폰, 쿠폰발급 도메인으로 분리  
-- Embeded H2 DB, Embeded Redis 를 사용
+- Embedded H2 DB, Embedded Redis 를 사용
 - 기본 적인 REST API 구현  
 - 쿠폰 생성 시 대용량 Insert를 위해 jdbc batch update를 구현
 
@@ -61,8 +61,8 @@ REST API 기반 쿠폰 시스템
 - 로그인 구현 ( 로그인 후 JWT 토큰 제공 ) 
 - API 호출 시 token 값 유효성 여부 검증 하는 Interceptor 구현 
 
-- EMBEDED REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현
-- Coupon Id를 키로 embeded redis에 저장 ( 쿠폰 조회시 사용 ) 
+- REDIS를 이용하여 CQRS(Command and Query Responsibility Segregation) 패턴 구현
+- Coupon Id를 키로 embedded redis에 저장 ( 쿠폰 조회시 사용 ) 
 
 - 만료 N일전 쿠폰을 조회
 - 만료일을 키로 Redis에 저장하고 만료일 기준으로 조회된 쿠폰 정보를 출력
@@ -304,7 +304,7 @@ Return value: HTTP status 200 (OK)
 ```
 
 ### <a name="chapter-10"></a>Performance Test
-Embeded DB내 쿠폰 100000개 생성 테스트 
+Embedded DB내 쿠폰 100000개 생성 테스트 
 <img src="src/docs/1.png" witdh="100%" height="100%">
 
 쿠폰 조회 성능 테스트 
