@@ -26,7 +26,6 @@ public class UserServiceImpl implements UserService {
   final private String ISUSER = "joyworld007";
   @Value("spring.jwt.secret")
   private String secretKey;
-  private Date EXPIRED_TIME = new Date(System.currentTimeMillis() + 60000 * 5);
 
   @Override
   public CommonResponseDto signUp(UserDto userDto) {
@@ -72,7 +71,7 @@ public class UserServiceImpl implements UserService {
   public String createToken(String userId) {
     return JWT.create()
         .withIssuer(ISUSER)
-        .withExpiresAt(EXPIRED_TIME)
+        .withExpiresAt(new Date(System.currentTimeMillis() + 60000 * 5))
         .withIssuedAt(new Date())
         .sign(Algorithm.HMAC256(secretKey));
   }
