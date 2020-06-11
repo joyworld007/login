@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
   final private String ISUSER = "joyworld007";
   @Value("spring.jwt.secret")
   private String secretKey;
-  private Date EXPIRED_TIME = new Date(System.currentTimeMillis() + 100000 * 10);
+  private Date EXPIRED_TIME = new Date(System.currentTimeMillis() + 60000 * 5);
 
   @Override
   public CommonResponseDto signUp(UserDto userDto) {
