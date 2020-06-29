@@ -1,6 +1,6 @@
 spring:
   application:
-    name: kakaopay-server-develop
+    name: server-develop
   profiles:
     active: local
 

@@ -22,7 +22,7 @@ spring:
         format_sql: true
 
   jwt:
-    secret: kakaopay!@#
+    secret: server!@#
 
 logging:
   level:
