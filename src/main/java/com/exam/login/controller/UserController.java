@@ -59,6 +59,8 @@ public class UserController {
       case "USER_NOT_FOUND":
         return CommonResponseEntity.fail("FAIL", commonResponseDto.getMessage());
     }
+    // 최근 접속 일자 업데이트
+    userService.modifyLastLoginDate(userDto.getUserId());
     return CommonResponseEntity.ok(commonResponseDto.getResult());
   }
 

@@ -12,8 +12,10 @@ import com.exam.login.domain.user.entity.User;
 import com.exam.login.repository.user.UserJpaRepository;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -99,6 +101,15 @@ public class UserServiceImpl implements UserService {
 
     } else {
       return CommonResponseDto.builder().message(ResultCode.USER_NOT_FOUND.toString()).build();
+    }
+  }
+
+  @Override
+  @Transactional
+  public void modifyLastLoginDate(String id) {
+    Optional<User> user = userJpaRepository.findById(id);
+    if (user.isPresent()) {
+      user.get().setLastLoginDate(LocalDateTime.now());
     }
   }
 

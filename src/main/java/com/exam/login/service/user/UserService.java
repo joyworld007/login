@@ -2,6 +2,7 @@ package com.exam.login.service.user;
 
 import com.exam.login.domain.common.CommonResponseDto;
 import com.exam.login.domain.user.dto.UserDto;
+import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,5 +19,9 @@ public interface UserService {
 
   //회원 정보 조회
   public CommonResponseDto findById(String id);
+
+  //로그인 일자 업데이트
+  @Transactional
+  public void modifyLastLoginDate(String id);
 
 }

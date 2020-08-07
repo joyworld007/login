@@ -9,6 +9,7 @@
 * [Api Feature list](#chapter-6)
 * [Api Endpoint](#chapter-7)
 * [How to run](#chapter-8)
+* [How to test](#chapter-9)
 
 ### <a name="chapter-1"></a>Specifications 
 ````
@@ -118,4 +119,14 @@ Return value: HTTP status 200 (OK), 401 (Unauthorized)
 http://localhost:8080/swagger-ui.html
 ```
  
- 
+### <a name="chapter-9"></a>How to Test
+1. Spring Boot Application을 실행 합니다. 
+
+2. 회원 가입 API를 호출하여 회원 가입을 진행 합니다.
+<img src="src/docs/2.png" witdh="100%" height="100%">
+
+3. 로그인 API를 호출하여 Access Token을 획득 합니다.
+<img src="src/docs/2.png" witdh="100%" height="100%">
+
+4. Access Token을 이용하여 회원 정보 조회 API를 호출하여 회원 정보를 조회 합니다.
+<img src="src/docs/3.png" witdh="100%" height="100%">
