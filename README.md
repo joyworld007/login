@@ -123,10 +123,10 @@ http://localhost:8080/swagger-ui.html
 1. Spring Boot Application을 실행 합니다. 
 
 2. 회원 가입 API를 호출하여 회원 가입을 진행 합니다.
-<img src="src/docs/2.png" witdh="100%" height="100%">
+<img src="src/docs/1.png" witdh="50%" height="50%">
 
 3. 로그인 API를 호출하여 Access Token을 획득 합니다.
-<img src="src/docs/2.png" witdh="100%" height="100%">
+<img src="src/docs/2.png" witdh="50%" height="50%">
 
 4. Access Token을 이용하여 회원 정보 조회 API를 호출하여 회원 정보를 조회 합니다.
-<img src="src/docs/3.png" witdh="100%" height="100%">
+<img src="src/docs/3.png" witdh="50%" height="50%">
