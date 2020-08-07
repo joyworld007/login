@@ -76,8 +76,8 @@ Description : 회원가입
 Return value: HTTP status 201 (Created) 
 Payload Example (required parameters)
 {
-	"userId" : "joyworld007", 
-	"password" : "12345",
+    "userId" : "joyworld007", 
+    "password" : "12345",
     "name" : "joyworld"
 }
 
