@@ -98,8 +98,10 @@ EndPoint : /v1/member/info
 Method : PUT 
 Description : 회원 정보를 조회
 Request Header
+{
     userId : userId 
-    Authorization Header Bearer Token : Access Token               
+    Authorization Header Bearer Token : Access Token
+}               
 Return value: HTTP status 200 (OK), 401 (Unauthorized)
 
 ```
