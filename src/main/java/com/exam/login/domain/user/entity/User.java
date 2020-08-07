@@ -15,6 +15,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter
 public class User {
 
   // 유저 아이디
@@ -24,14 +25,16 @@ public class User {
   //패스워드
   private String password;
 
-  @Setter
+  //이름
   private String name;
 
-  @Setter
+  //토큰
   private String token;
 
+  //마지막 로그인 시간
   private LocalDateTime lastLoginDate;
 
+  //가입일자
   private LocalDateTime registDate;
 
   @Builder

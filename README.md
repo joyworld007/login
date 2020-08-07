@@ -78,7 +78,7 @@ Payload Example (required parameters)
 {
 	"userId" : "joyworld007", 
 	"password" : "12345",
-    "userName" : "joyworld"
+    "name" : "joyworld"
 }
 
 ----------------------------------------------------------------------------------------------------

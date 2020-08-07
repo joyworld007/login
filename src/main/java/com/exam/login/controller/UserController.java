@@ -4,6 +4,7 @@ import com.exam.login.domain.common.CommonResponseDto;
 import com.exam.login.domain.common.CommonResponseEntity;
 import com.exam.login.domain.user.dto.UserDto;
 import com.exam.login.service.user.UserService;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/member")
+@SuppressWarnings("unchecked")
 public class UserController {
 
   final UserService userService;
@@ -35,6 +37,7 @@ public class UserController {
     if (!Optional.ofNullable(userId).isPresent() || !Optional.ofNullable(password).isPresent()) {
       return CommonResponseEntity.badRequest();
     }
+    userDto.setRegistDate(LocalDateTime.now());
     CommonResponseDto<UserDto> commonResponseDto = userService.signUp(userDto);
     switch (commonResponseDto.getMessage()) {
       case "DUPLICATED_USER":
