@@ -2,11 +2,11 @@ spring:
   h2:
     console:
       enabled: true
-      path: /coupon
+      path: /login
 
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:file:./coupon
+    url: jdbc:h2:file:./login
     username: sa
     password:
 
