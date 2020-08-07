@@ -86,7 +86,7 @@ Payload Example (required parameters)
 EndPoint : /v1/member/login
 Method : POST
 Description : 로그인
-Return value: HTTP status 200 (OK) 
+Return value: HTTP status 200 (OK), Http status 404(NOT FOUNT) 
 Payload Example (required parameters)
 {
 	"userId" : "joyworld007", 
