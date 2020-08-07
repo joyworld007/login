@@ -77,7 +77,7 @@ Return value: HTTP status 201 (Created)
 Payload Example (required parameters)
 {
 	"userId" : "joyworld007", 
-	"password" : "12345"
+	"password" : "12345",
     "userName" : "joyworld"
 }
 
