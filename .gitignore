@@ -4,8 +4,8 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-user.mv.db
-user.trace.db
+login.mv.db
+login.trace.db
 
 ### STS ###
 .apt_generated
